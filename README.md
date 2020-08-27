@@ -5,7 +5,7 @@ This README would normally document whatever steps are necessary to get your app
 ### What is this repository for? ###
 
 * This is a private repository for Team 8 in CPS 490 Capstone I.
-* Team 8 includes Justen Stall (stallj2@udayton.edu), Jacob Scheetz (scheetzj2@udayton.edu)
+* Team 8 includes Justen Stall (stallj2@udayton.edu), Jacob Scheetz (scheetzj2@udayton.edu), Beth Hosek (hoseke1@udayton.edu)
 * Version 1.0
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
