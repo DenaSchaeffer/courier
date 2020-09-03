@@ -25,7 +25,7 @@ Instructor: Dr. Phu Phung
 1.  Jacob Scheetz, scheetzj2@udayton.edu
 2.  Beth Hosek, hoseke1@udayton.edu
 3.  Justen Stall, stallj2@udayton.edu
-4.  Member 4, email
+4.  Dena Schaeffer, backd1@udayton.edu
 
 
 # Project Management Information
@@ -55,6 +55,10 @@ _(Start from Sprint 0, keep updating)_
 -Users can type text and send a single receiver
 -Users can type text and send to a group 
 -Users can register to the system
+-Users can login with a registered account
+-Users should receive the messages sent to them in real time
+-Users can view the message history
+-Users can see if the sent messages have been read
 
 
 ## Use cases
