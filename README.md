@@ -24,7 +24,7 @@ Instructor: Dr. Phu Phung
 
 1.  Jacob Scheetz, scheetzj2@udayton.edu
 2.  Beth Hosek, hoseke1@udayton.edu
-3.  Member 3, email
+3.  Justen Stall, stallj2@udayton.edu
 4.  Member 4, email
 
 
