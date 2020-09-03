@@ -32,7 +32,7 @@ Instructor: Dr. Phu Phung
 
 Management board (private access): <https://trello.com/***>
 
-Source code repository (private access): <https://bitbucket.org/***>
+Source code repository (private access): https://bitbucket.org/cps490f20-team8/cps490-project-team8/src/master/
 
 
 ## Revision History
