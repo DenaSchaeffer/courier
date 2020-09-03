@@ -23,7 +23,7 @@ Instructor: Dr. Phu Phung
 # Team members
 
 1.  Jacob Scheetz, scheetzj2@udayton.edu
-2.  Member 2, email
+2.  Beth Hosek, hoseke1@udayton.edu
 3.  Member 3, email
 4.  Member 4, email
 
@@ -52,7 +52,7 @@ _(Start from Sprint 0, keep updating)_
 
 ## User Requirements
 
-List high-level requirements of the project that your team will develop into use cases in later steps _(Main focus of Sprint 0)_
+-Users can type text and send a single receiver
 
 ## Use cases
 
