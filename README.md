@@ -39,7 +39,7 @@ Source code repository (private access): https://bitbucket.org/cps490f20-team8/c
 
 | Date     |   Version     |  Description |
 |----------|:-------------:|-------------:|
-|MM/DD/YYYY|  0.0          | Init draft   |
+|09/03/2020|  0.0          | Init draft   |
 
 
 # Overview
