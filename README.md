@@ -53,6 +53,9 @@ _(Start from Sprint 0, keep updating)_
 ## User Requirements
 
 -Users can type text and send a single receiver
+-Users can type text and send to a group 
+-Users can register to the system
+
 
 ## Use cases
 
