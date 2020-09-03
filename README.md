@@ -104,7 +104,7 @@ Include the Trello board with product backlog and sprint cycles in an overview f
 
 Also, include the Gantt chart reflects the timeline from the Trello board. _(Main focus of Sprint 0)_
 
-![Sprint 0 timeline](gantt chart.png)
+![Sprint 0 timeline](ganttchart.png)
 
 ## Scrum process
 
