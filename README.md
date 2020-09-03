@@ -51,15 +51,15 @@ Describe the overview of the project with a high-level architecture figure.
 _(Start from Sprint 0, keep updating)_
 
 ## User Requirements
-<ul>
-<li>Users can type text and send a single receiver</li>
-<li>Users can type text and send to a group</li>
-<li>Users can register to the system</li>
-<li>Users can login with a registered account</li>
-<li>Users should receive the messages sent to them in real time</li>
-<li>Users can view the message history</li>
-<li>Users can see if the sent messages have been read</li>
-</ul>
+
+- Users can type text and send a single receiver
+- Users can type text and send to a group
+- Users can register to the system
+- Users can login with a registered account
+- Users should receive the messages sent to them in real time
+- Users can view the message history
+- Users can see if the sent messages have been read
+
 
 ## Use cases
 
