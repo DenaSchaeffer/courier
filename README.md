@@ -45,7 +45,9 @@ Source code repository (private access): https://bitbucket.org/cps490f20-team8/c
 
 # Overview
 
-Describe the overview of the project with a high-level architecture figure. 
+The messenger application is a live-chat application that communicates between the client and chat server (web application in Node.js). 
+
+![High Level Architecture](architecture.png)
 
 # System Analysis
 
@@ -127,10 +129,10 @@ Duration: 09-01-2020 to 09-10-2020
 
 #### Contributions: 
 
-1.  Jacob Scheetz, 4 hours, contributed in use cases, powerpoint, Trello, and use case diagram creation 
-2.  Beth Hosek 2, 4 hours, contributed in use cases, powerpoint, Trello, and use case diagram creation 
-3.  Justen Stall, 4 hours, contributed in use cases, powerpoint, Trello, and use case diagram creation 
-4.  Dena Schaeffer, 4 hours, contributed in use cases, powerpoint, Trello, and use case diagram creation 
+1.  Jacob Scheetz, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+2.  Beth Hosek 2, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+3.  Justen Stall, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+4.  Dena Schaeffer, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
 
 #### Sprint Retrospective:
 
