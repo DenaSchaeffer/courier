@@ -64,7 +64,13 @@ _(Start from Sprint 0, keep updating)_
 
 ## Use cases
 
-Draw the overview use case diagram, and define brief use case description for each use case _(Main focus of Sprint 0)_
+![Use Case Diagram](usecase.png)
+
+ * Unregisted users can only register to the system
+ * Registered users can log in using their registered information
+ * Registered users can send a message to an individual or guest receiver
+ * Registered users can view message history
+ * Registered users can see if messages have been read by the receiver
 
 # System Design
 
