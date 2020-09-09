@@ -30,7 +30,7 @@ Instructor: Dr. Phu Phung
 
 # Project Management Information
 
-Management board (private access): <https://trello.com/***>
+Management board (private access): <https://trello.com/b/ddzbQQx4/team-project>
 
 Source code repository (private access): https://bitbucket.org/cps490f20-team8/cps490-project-team8/src/master/
 
@@ -115,9 +115,9 @@ Also, include the Gantt chart reflects the timeline from the Trello board. _(Mai
 
 ## Scrum process
 
-### Sprint x
+### Sprint 0
 
-Duration: dd/mm/yyyy-dd/mm/yyyy
+Duration: 09-01-2020 to 09-10-2020
 
 #### Completed Tasks: 
 
