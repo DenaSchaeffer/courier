@@ -121,16 +121,16 @@ Duration: dd/mm/yyyy-dd/mm/yyyy
 
 #### Completed Tasks: 
 
-1. Task 1
-2. Task 2
-3. ...
+1. Use cases defined
+2. Use case diagram made
+3. Gantt chart created in Trello
 
 #### Contributions: 
 
-1.  Member 1, x hours, contributed in xxx
-2.  Member 2, x hours, contributed in xxx
-3.  Member 3, x hours, contributed in xxx
-4.  Member 4, x hours, contributed in xxx
+1.  Jacob Scheetz, 4 hours, contributed in use cases, powerpoint, Trello, and use case diagram creation 
+2.  Beth Hosek 2, 4 hours, contributed in use cases, powerpoint, Trello, and use case diagram creation 
+3.  Justen Stall, 4 hours, contributed in use cases, powerpoint, Trello, and use case diagram creation 
+4.  Dena Schaeffer, 4 hours, contributed in use cases, powerpoint, Trello, and use case diagram creation 
 
 #### Sprint Retrospective:
 
