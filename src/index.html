@@ -14,6 +14,14 @@
 	<div class="container w-50">
 		<h1 id="title">Messenger 0.0</h1>
 		<p id="subtitle">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob Scheetz in CPS490</p>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socketio = io();
+            function login(){
+                document.getElementById('messages').innerHTML+=
+                    "Welcome " + document.getElementById('username').value+"<br>";
+            }
+        </script>
 		<div id="login-form" class="form-group">
 			Please login first: <br>
 			<input type="text" id="username" placeholder="Enter your name ..." class="form-control">
