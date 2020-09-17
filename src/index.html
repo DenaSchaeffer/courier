@@ -17,12 +17,21 @@
 		<div id="login-form" class="form-group">
 			Please login first: <br>
 			<input type="text" id="username" placeholder="Enter your name ..." class="form-control">
-			<button type="button" class="btn btn-primary">JOIN</button>
+            <button type="button" class="btn btn-primary"
+            onclick="document.getElementById('messages').innerHTML='Welcome ' + document.getElementById('username').value">
+            JOIN</button>
 		</div>
         
     
 		<div id="chatUI">
-			<div id="messages"></div>
+			Your message: <input type="text" id="yourmessage" placeholder="Enter your message ...">
+            <button type="button" onclick="sendmessage()">Send</button>
+            <div id="messages"></div>
+            <script>
+                function sendmessage(){
+                    document.getElementById('messages').innerHTML+=
+                    document.getElementById('yourmessage').value + "<br>";
+                }
 		</div>
 	</div>
 
