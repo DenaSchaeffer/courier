@@ -19,6 +19,11 @@
             var socketio = io();
             function login(){
                 var username = document.getElementById('username').value;
+
+                socketio.on("welcome", (welcomemessage) => {
+                    document.getElementById('messages').innerHTML+= welcomemessage + "<br>";
+                })
+                
                 if(socketio)
                     socketio.emit("login", username);
                 //document.getElementById('messages').innerHTML+=
