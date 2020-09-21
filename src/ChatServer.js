@@ -19,4 +19,9 @@ socketclient.on("login", (username) => {
     var welcomemessage = username + "has joined the chat system!";
     console.log(welcomemessage);
     socketio.sockets.emit("welcome", welcomemessage);
-})
+});
+socketclient.on("chat", (message) => {
+    var chatmessage = socketclient.username + " says: " + message;
+    console.log(chatmessage);
+    socketio.sockets.emit("chat", chatmessage);
+});
