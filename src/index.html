@@ -29,6 +29,15 @@
                 //document.getElementById('messages').innerHTML+=
                     //"Welcome " + document.getElementById('username').value+"<br>";
             }
+
+            function sendmessage(){
+                socketio.emit("chat", document.getElementById('yourmessage').value);
+            }
+
+            socketio.on("chat",(chatmessage) => {
+                document.getElementById('messages').innerHTML+= chatmessage + "<br>";
+            });
+
         </script>
 		<div id="login-form" class="form-group">
 			Please login first: <br>
