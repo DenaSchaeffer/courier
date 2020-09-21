@@ -18,8 +18,11 @@
         <script>
             var socketio = io();
             function login(){
-                document.getElementById('messages').innerHTML+=
-                    "Welcome " + document.getElementById('username').value+"<br>";
+                var username = document.getElementById('username').value;
+                if(socketio)
+                    socketio.emit("login", username);
+                //document.getElementById('messages').innerHTML+=
+                    //"Welcome " + document.getElementById('username').value+"<br>";
             }
         </script>
 		<div id="login-form" class="form-group">
