@@ -22,7 +22,7 @@
 
                 socketio.on("welcome", (welcomemessage) => {
                     document.getElementById('messages').innerHTML+= welcomemessage + "<br>";
-                })
+                });
                 
                 if(socketio)
                     socketio.emit("login", username);
