@@ -43,8 +43,9 @@
 			Please login first: <br>
 			<input type="text" id="username" placeholder="Enter your name ..." class="form-control">
             <button type="button" class="btn btn-primary"
-            onclick="document.getElementById('messages').innerHTML='Welcome ' + document.getElementById('username').value + '<br>'">
+            onclick="login()">
             JOIN</button>
+            <!-- document.getElementById('messages').innerHTML='Welcome ' + document.getElementById('username').value + '<br>' -->
 		</div>
         
     
@@ -52,12 +53,12 @@
 			Your message: <input type="text" id="yourmessage" placeholder="Enter your message ...">
             <button type="button" onclick="sendmessage()">Send</button>
             <div id="messages"></div>
-            <script>
+            <!-- <script>
                 function sendmessage(){
                     document.getElementById('messages').innerHTML+=
-                    document.getElementById('yourmessage').value + "<br>";
+                    document.getElementById('username').value + 'says: ' document.getElementById('yourmessage').value + "<br>";
                 }
-            </script>
+            </script> -->
 		</div>
 	</div>
 

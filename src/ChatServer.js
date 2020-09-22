@@ -15,7 +15,7 @@ socketio.on("connection", function (socketclient) {
     console.log("A new Socket.IO client is connected. ID= " + socketclient.id)
     socketclient.on("login", (username) => {
         socketclient.username = username;
-        var welcomemessage = username + "has joined the chat system!";
+        var welcomemessage = username + " has joined the chat system!";
         console.log(welcomemessage);
         socketio.sockets.emit("welcome", welcomemessage);
     });
