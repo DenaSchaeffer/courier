@@ -18,5 +18,9 @@
   ],
   "author": "Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob Scheetz",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/cps490f20-team8/cps490-project-team8#readme"
+  "homepage": "https://bitbucket.org/cps490f20-team8/cps490-project-team8#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
 }
