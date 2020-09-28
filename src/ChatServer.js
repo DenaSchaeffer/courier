@@ -47,7 +47,7 @@ var DataLayer = {
         return true;
     }
 }
-function SendToAuthenticatedClient(sendersocket,type,data){
+function SendToAuthenticatedClient(sendersocket, type, data){
     var sockets = socketio.sockets.sockets;
     for(var socketId in sockets){
         var socketclient=sockets[socketId];
