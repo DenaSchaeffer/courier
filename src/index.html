@@ -39,6 +39,12 @@
                 document.getElementById('messages').innerHTML+= chatmessage + "<br>";
             });
 
+            socketio.on("authenticated",() => {
+                    document.getElementById("loginUI").style.display = "none";
+                    document.getElementById("chatUI").style.display = "block";
+                    document.getElementById("messages").innerHTML+= 
+                        "You are successfully logged in! Can start chatting now.<br>";
+                });
         </script>
 		<div id="login-form" class="form-group">
 			Please login first: <br>
