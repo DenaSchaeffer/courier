@@ -10,13 +10,13 @@
 
 </head>
 
-<body>
+<body id="body">
 	<div class="container w-50">
 		<h1 id="title">Messenger 0.0</h1>
 		<p id="subtitle">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob Scheetz in CPS490</p>
-        <script src="/socket.io/socket.io.js"></script>
-        <script>
-            var socketio = io();
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			var socketio = io();
             function login(){
                 var username = document.getElementById('username').value;
                 var password = document.getElementById('password').value;
@@ -45,32 +45,44 @@
                     document.getElementById("messages").innerHTML+= 
                         "You are successfully logged in! Can start chatting now.<br>";
                 });
-        </script>
+            
+            function toggleDarkMode(){
+                var body = document.body;
+                if(body.style.backgroundColor === "black") {
+                    body.style.backgroundColor = "white";
+                    body.style.color = "black";
+                } else {
+                    body.style.backgroundColor = "black";
+                    body.style.color = "white";
+                }
+            }
+		</script>
 		<div id="loginUI" class="form-group">
 			Please login first: <br>
 			<input type="text" id="username" placeholder="Enter your name ..." class="form-control">
-            <input type="password" id="password" placeholder="Password">
-            <button type="button" class="btn btn-primary"
+			<input type="password" id="password" placeholder="Password">
+			<button type="button" class="btn btn-primary"
             onclick="login()">
             JOIN</button>
-            <!-- document.getElementById('messages').innerHTML='Welcome ' + document.getElementById('username').value + '<br>' -->
+			<!-- document.getElementById('messages').innerHTML='Welcome ' + document.getElementById('username').value + '<br>' -->
 		</div>
-        
-    
+
+
 		<div id="chatUI" style="display:none;">
 			Your message: <input type="text" id="yourmessage" placeholder="Enter your message ...">
-            <button type="button" onclick="sendmessage()">Send</button>
-            <div id="messages"></div>
-            <!-- <script>
+			<button type="button" onclick="sendmessage()">Send</button>
+			<div id="messages"></div>
+			<!-- <script>
                 function sendmessage(){
                     document.getElementById('messages').innerHTML+=
                     document.getElementById('username').value + 'says: ' document.getElementById('yourmessage').value + "<br>";
                 }
             </script> -->
 		</div>
+		<button id="dark-mode-toggle" type="button" onclick="toggleDarkMode()">TOGGLE DARK MODE</button>
 	</div>
 
-    
+
 	<!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
 		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
 	</script>
