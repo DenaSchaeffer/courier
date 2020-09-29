@@ -48,29 +48,46 @@
             
             function toggleDarkMode(){
                 var body = document.body;
+                var button = document.getElementById('dark-mode');
                 if(body.style.backgroundColor === "black") {
                     body.style.backgroundColor = "white";
                     body.style.color = "black";
+                    button.innerHTML = "DARK MODE"
                 } else {
                     body.style.backgroundColor = "black";
                     body.style.color = "white";
+                    button.innerHTML = "LIGHT MODE"
                 }
             }
 		</script>
-		<div id="loginUI" class="form-group">
-			Please login first: <br>
-			<input type="text" id="username" placeholder="Enter your name ..." class="form-control">
-			<input type="password" id="password" placeholder="Password">
-			<button type="button" class="btn btn-primary"
-            onclick="login()">
-            JOIN</button>
-			<!-- document.getElementById('messages').innerHTML='Welcome ' + document.getElementById('username').value + '<br>' -->
+		<form>
+			<div id="loginUI">
+				<div class="form-group">
+					<label>Please login first: </label>
+					<input type="text" id="username" placeholder="Enter your name ..." class="form-control">
+                </div>
+
+					<div class="form-group">
+						<input type="password" id="password" placeholder="Password" class="form-control">
+                </div>
+						<button type="button" class="btn btn-primary"
+                onclick="login()">
+                JOIN</button>
+						<!-- document.getElementById('messages').innerHTML='Welcome ' + document.getElementById('username').value + '<br>' -->
+					</div>
+		</form>
+
+		<div class="form-group">
+			<button type="button" id="dark-mode" class="btn btn-light" onclick="toggleDarkMode()">TOGGLE DARK MODE</button>
 		</div>
-
-
 		<div id="chatUI" style="display:none;">
-			Your message: <input type="text" id="yourmessage" placeholder="Enter your message ...">
-			<button type="button" onclick="sendmessage()">Send</button>
+			Your message:
+			<div class="input-group">
+				<input type="text" id="yourmessage" placeholder="Enter your message ..." class="form-control">
+				<div class="input-group-append">
+					<button type="button" class="btn btn-primary" onclick="sendmessage()">Send</button>
+				</div>
+			</div>
 			<div id="messages"></div>
 			<!-- <script>
                 function sendmessage(){
@@ -79,7 +96,6 @@
                 }
             </script> -->
 		</div>
-		<button id="dark-mode-toggle" type="button" onclick="toggleDarkMode()">TOGGLE DARK MODE</button>
 	</div>
 
 
