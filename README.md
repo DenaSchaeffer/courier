@@ -88,16 +88,60 @@ _(Start from Sprint 3, keep updating)_
 
 ## User Interface
 
-_(Start from Sprint 1, keep updating)_
+* our first distinctive UI element that w ehave implemnted inot our system is a Dark Mode toggle button. 
+* this implementation allows the end user to click a button to change the interface color depending on preference. 
 
 # Implementation
+## Sprint 1
 
-_(Start from Sprint 1, keep updating)_
+* During this sprint, we were mainly focused on the funtionality of our messenger application. 
+* We implemented the following the uses: The ability to login to the system, the ability to send messages to groups, the ability to send a message to a single user, and the ability to toggle dark and light mode on the interface. 
+* This implementations were done by deploying the application on Heroku, furthering our development of the ChatServer.js file in node and updating the home page in HTML. 
+* the updates to ChatServer.js are in the code snippets below:
+``` 
+function SendToAuthenticatedClient(sendersocket, type, data){
+    var sockets = socketio.sockets.sockets;
+    for(var socketId in sockets){
+        var socketclient=sockets[socketId];
+        if(socketclient.authenticated){
+            socketclient.emit(type,data);
+            var logmsg= "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
+            console.log(logmsg);
+        }
+    }
 
-For each new sprint cycle, update the implementation of your system (break it down into subsections). It is helpful if you can include some code snippets to illustrate the implementation
+}
+```
 
-Specify the development approach of your team, including programming languages, database, development, testing, and deployment environments. 
+```
+socketio.on("connection", function (socketclient) {
+    console.log("A new Socket.IO client is connected. ID= " + socketclient.id)
+    socketclient.on("login", (username,password) => {
+        socketclient.username = username;
+        console.log("Debug>got username=" + username + " password="+ password);
+        if(DataLayer.checklogin(username,password)){
+            socketclient.authenticated=true;
+            socketclient.emit("authenticated");
+            var welcomemessage = username + " has joined the chat system!";
+            console.log(welcomemessage);
+            //socketio.sockets.emit("welcome", welcomemessage);
+            SendToAuthenticatedClient(socketclient, "Welcome", welcomemessage);
+          }
 
+        
+    });
+    socketclient.on("chat", (message) => {
+        if(!socketclient.authenticated)
+        {
+            console.log("Unauthenticated client sent a chat. Supress!");
+            return;
+        }
+        var chatmessage = socketclient.username + " says: " + message;
+        console.log(chatmessage);
+        socketio.sockets.emit("chat", chatmessage);
+    });
+});
+```
 
 ## Deployment
 
