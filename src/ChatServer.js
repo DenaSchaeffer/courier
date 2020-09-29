@@ -37,27 +37,6 @@ socketio.on("connection", function (socketclient) {
         console.log(chatmessage);
         socketio.sockets.emit("chat", chatmessage);
     });
-
-    
-    // testing pm
-    var users = {};
-
-    socket.on('login', function(user){
-    // on connection store users, you can delete object properties on disconnect
-    users[user.username] = socket.id; // usernames and their socket ids are related now.
-    });
-    socket.on('newmsg', function(message){
-    if(message.indexOf('/w') == 0){ // Check, is user whispering
-        var messageArray = message.split(' '); // Split string as array
-        var username = messageArray[1]; // we got username
-        var msg = messageArray.splice(2).join(' '); // join message's words
-        socket.broadcast.to(users[username]).emit('newmsg', msg); // gets message (users[username] gives his socket.id)
-    }else{
-        // send message everybody
-    }
-    });
-    //end pm test
-
 });
 var DataLayer = {
     info: 'Data Layer Implementation for  Messenger',
