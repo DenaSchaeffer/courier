@@ -21,8 +21,7 @@ socketio.on("connection", function (socketclient) {
             socketclient.emit("authenticated");
             var welcomemessage = username + " has joined the chat system!";
             console.log(welcomemessage);
-            //socketio.sockets.emit("welcome", welcomemessage);
-            SendToAuthenticatedClient(socketclient, "Welcome", welcomemessage);
+            SendToAuthenticatedClient(socketclient, "welcome", welcomemessage);
           }
 
         

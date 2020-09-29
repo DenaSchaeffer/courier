@@ -21,14 +21,12 @@
                 var username = document.getElementById('username').value;
                 var password = document.getElementById('password').value;
 
-                socketio.on("welcome", (welcnomemessage) => {
+                socketio.on("welcome", (welcomemessage) => {
                     document.getElementById('messages').innerHTML+= welcomemessage + "<br>";
                 });
                 
                 if(socketio)
                     socketio.emit("login", username,password);
-                //document.getElementById('messages').innerHTML+=
-                    //"Welcome " + document.getElementById('username').value+"<br>";
             }
 
             function sendmessage(){
@@ -66,15 +64,13 @@
 					<label>Please login first: </label>
 					<input type="text" id="username" placeholder="Enter your name ..." class="form-control">
                 </div>
-
-					<div class="form-group">
-						<input type="password" id="password" placeholder="Password" class="form-control">
+				<div class="form-group">
+					<input type="password" id="password" placeholder="Password" class="form-control">
                 </div>
-						<button type="button" class="btn btn-primary"
-                onclick="login()">
-                JOIN</button>
-						<!-- document.getElementById('messages').innerHTML='Welcome ' + document.getElementById('username').value + '<br>' -->
-					</div>
+				<button type="button" class="btn btn-primary" onclick="login()">
+                    JOIN
+                </button>
+			</div>
 		</form>
 
 		<div class="form-group">
@@ -89,12 +85,6 @@
 				</div>
 			</div>
 			<div id="messages"></div>
-			<!-- <script>
-                function sendmessage(){
-                    document.getElementById('messages').innerHTML+=
-                    document.getElementById('username').value + 'says: ' document.getElementById('yourmessage').value + "<br>";
-                }
-            </script> -->
 		</div>
 	</div>
 
