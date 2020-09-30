@@ -77,19 +77,15 @@
 			<button type="button" id="dark-mode" class="btn btn-light" onclick="toggleDarkMode()">TOGGLE DARK MODE</button>
 		</div>
 		<div id="chatUI" style="display:none;">
-			<div class="dropdown">
-                <button onclick="myFunction()" class="dropbtn">Dropdown</button>
-                <div id="myDropdown" class="dropdown-content">
-                    <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-                    <a>About</a>
-                    <a>Base</a>
-                    <a>Blog</a>
-                    <a>Contact</a>
-                    <a>Custom</a>
-                    <a>Support</a>
-                    <a>Tools</a>
-                </div>
-                </div>
+            <select class="mdb-select md-form" searchable="Search here..">
+                <option value="" disabled selected>Choose your country</option>
+                <option value="1">USA</option>
+                <option value="2">Germany</option>
+                <option value="3">France</option>
+                <option value="3">Poland</option>
+                <option value="3">Japan</option>
+            </select>
+            
             Your message:
 			<div class="input-group">
 				<input type="text" id="yourmessage" placeholder="Enter your message ..." class="form-control">
