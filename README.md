@@ -129,7 +129,6 @@ socketio.on("connection", function (socketclient) {
           }
 
         
-    });
     socketclient.on("chat", (message) => {
         if(!socketclient.authenticated)
         {
@@ -140,12 +139,11 @@ socketio.on("connection", function (socketclient) {
         console.log(chatmessage);
         socketio.sockets.emit("chat", chatmessage);
     });
-});
 ```
 
 ## Deployment
 
-Describe how to deploy your system in a specific platform.
+* Our team decied to deploy on application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code and have the ability to create a dynamic web application.
 
 # Software Process Management
 
