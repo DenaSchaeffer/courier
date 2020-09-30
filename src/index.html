@@ -17,6 +17,7 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var socketio = io();
+
             function login(){
                 var username = document.getElementById('username').value;
                 var password = document.getElementById('password').value;
@@ -26,15 +27,30 @@
                 });
                 
                 if(socketio)
-                    socketio.emit("login", username,password);
+                    socketio.emit("login", username, password);
             }
 
             function sendmessage(){
                 socketio.emit("chat", document.getElementById('yourmessage').value);
             }
+            
+            function sendprivatemessage(){
+                var userSelect = document.getElementById("userSelect");
+                var socketId = userSelect.options[userSelect.selectedIndex].value;
+                io.to(socketId).emit("chat", document.getElementById('privatemessage').value);
+                // socketio.emit("chat", );
+            }
 
             socketio.on("chat",(chatmessage) => {
-                document.getElementById('messages').innerHTML+= chatmessage + "<br>";
+                document.getElementById('messages').innerHTML += chatmessage + "<br>";
+            });
+            
+            socketio.on("newuser", (users) => {
+                var select = document.getElementById('userSelect');
+                users.forEach(user => {
+                    var userOption = '<option value="' + user.id + '">' + user.username + '</option>';
+                    select.innerHTML += userOption;
+                });
             });
 
             socketio.on("authenticated",() => {
@@ -92,7 +108,19 @@
 							<button type="button" class="btn btn-primary" onclick="sendmessage()">Send</button>
 						</div>
 					</div>
-				</div>
+            
+                <div class="form-group">
+                    <label>Your message:</label>
+                    <div class="input-group">
+                        <select id="userSelect" name="user" class="input-group-prepend" searchable="Search here..">
+                            <option value="" disabled selected>Private Message</option>
+                        </select>
+                        <input type="text" id="privatemessage" placeholder="Enter your message ..." class="form-control">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary" onclick="sendprivatemessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
 			</form>
 			<div id="messages"></div>
 		</div>
