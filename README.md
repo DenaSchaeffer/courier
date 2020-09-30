@@ -170,6 +170,14 @@ Also, include the Gantt chart reflects the timeline from the Trello board. _(Mai
 2. Use case diagram made
 3. Gantt chart created in Trello
 
+#### Contributions: 
+
+1.  Jacob Scheetz, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+2.  Beth Hosek 2, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+3.  Justen Stall, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+4.  Dena Schaeffer, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+
+
 Duration: 09-01-2020 to 09-10-2020
 
 ### Sprint 1
@@ -184,10 +192,10 @@ Duration: 09-11-2020 to 10-01-2020
 
 #### Contributions: 
 
-1.  Jacob Scheetz, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-2.  Beth Hosek 2, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-3.  Justen Stall, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-4.  Dena Schaeffer, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+1.  Jacob Scheetz, 4 hours, contributed in README, class code updates, powerpoint slides 
+2.  Beth Hosek 2, 4 hours, contributed in README, class code updates, powerpoint slides 
+3.  Justen Stall, 4 hours, contributed in README, class code updates, powerpoint slides 
+4.  Dena Schaeffer, 4 hours, contributed in README, class code updates, powerpoint slides 
 
 #### Sprint Retrospective:
 
