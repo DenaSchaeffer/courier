@@ -165,22 +165,22 @@ Also, include the Gantt chart reflects the timeline from the Trello board. _(Mai
 ## Scrum process
 
 ### Sprint 0
-
-Duration: 09-01-2020 to 09-10-2020
-
-### Sprint 1 
-
-Duration: 09-11-2020 to 10-01-2020
-
-#### Completed Tasks: 
-
+#### Completed Tasks:
 1. Use cases defined
 2. Use case diagram made
 3. Gantt chart created in Trello
-4. Ability to send message to everyone 
-5. Login functionality 
-6. Send messages to indiviuals
-7. Read messages that have been sent to you
+
+Duration: 09-01-2020 to 09-10-2020
+
+### Sprint 1
+#### Completed Tasks:
+1. Ability to send message to everyone 
+2. Login functionality 
+3. Send messages to indiviuals
+4. Read messages that have been sent to you
+
+Duration: 09-11-2020 to 10-01-2020
+
 
 #### Contributions: 
 
