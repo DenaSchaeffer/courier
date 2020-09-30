@@ -47,6 +47,19 @@ socketio.on("connection", function (socketclient) {
         console.log(chatmessage);
         socketio.sockets.emit("chat", chatmessage);
     });
+    socketclient.on("privatechat", (message) => {
+        if(!socketclient.authenticated)
+        {
+            console.log("Unauthenticated client sent a chat. Supress!");
+            return;
+        }
+        var receivingUser = users.find(user => user.id === message.socketId);
+        var chatmessage = "(PRIVATE) " + socketclient.username + " says: " + message.message;
+        var sentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
+        console.log(chatmessage);
+        socketio.to(message.socketId).emit("chat", chatmessage);
+        socketio.to(socketclient.id).emit("chat", sentmessage);
+    });
 });
 var DataLayer = {
     info: 'Data Layer Implementation for  Messenger',
