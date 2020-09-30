@@ -1,6 +1,7 @@
 var http = require('http')
 var app = require('express')()
 var server = http.createServer(app)
+var users = {}
 const port = process.env.PORT || 8080
 server.listen(port);
 console.log(`Express HTTP Server is listening on port ${port}`)
@@ -16,6 +17,7 @@ socketio.on("connection", function (socketclient) {
     console.log("A new Socket.IO client is connected. ID= " + socketclient.id)
     socketclient.on("login", (username,password) => {
         socketclient.username = username;
+        users[username] = socketclient.id; //add user to dict --prevent multiple users later
         console.log("Debug>got username=" + username + " password="+ password);
         if(DataLayer.checklogin(username,password)){
             socketclient.authenticated=true;
