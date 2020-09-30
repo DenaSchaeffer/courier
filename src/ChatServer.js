@@ -18,6 +18,7 @@ socketio.on("connection", function (socketclient) {
     socketclient.on("login", (username,password) => {
         socketclient.username = username;
         users[username] = socketclient.id; //add user to dict --prevent multiple users later
+        console.log(users);
         console.log("Debug>got username=" + username + " password="+ password);
         if(DataLayer.checklogin(username,password)){
             socketclient.authenticated=true;
