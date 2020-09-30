@@ -52,7 +52,7 @@ The messenger application is a live-chat application that communicates between t
 
 # System Analysis
 
-* In the current state of the application, sprint 1, we were able to deploy our application to HEroku so that the hosting is taken care of. 
+* In the current state of the application, sprint 1, we were able to deploy our application to Heroku so that the hosting is taken care of. 
 * With this, the application does not have to be spun up locally to interact with the application everytime
 
 ## User Requirements
