@@ -39,6 +39,7 @@ Source code repository (private access): https://bitbucket.org/cps490f20-team8/c
 
 | Date     |   Version     |  Description |
 |----------|:-------------:|-------------:|
+|09/30/2020|  0.2          | Sprint 1     |
 |09/10/2020|  0.1          | added details|
 |09/03/2020|  0.0          | Init draft   |
 
@@ -51,7 +52,8 @@ The messenger application is a live-chat application that communicates between t
 
 # System Analysis
 
-_(Start from Sprint 0, keep updating)_
+* In the current state of the application, sprint 1, we were able to deploy our application to HEroku so that the hosting is taken care of. 
+* With this, the application does not have to be spun up locally to interact with the application everytime
 
 ## User Requirements
 
@@ -76,11 +78,12 @@ _(Start from Sprint 0, keep updating)_
 
 # System Design
 
-_(Start from Sprint 1, keep updating)_
+* Our system is designed such that a user must login before they are able to access the application
+* Once logged in, the user is able to send messages to everyone, send messages individually, or view the messages they have been sent
 
 ## Use-Case Realization
 
-_(Start from Sprint 1, keep updating)_
+* The functionality that we as a team feel is necessary to implement next is the ability to show a list of active users within the system. We feel that this will help improve the practicality of our application
 
 ## Database 
 
@@ -88,7 +91,7 @@ _(Start from Sprint 3, keep updating)_
 
 ## User Interface
 
-* our first distinctive UI element that w ehave implemnted inot our system is a Dark Mode toggle button. 
+* our first distinctive UI element that we have implemnted into our system is a Dark Mode toggle button. 
 * this implementation allows the end user to click a button to change the interface color depending on preference. 
 
 # Implementation
@@ -127,6 +130,7 @@ socketio.on("connection", function (socketclient) {
             //socketio.sockets.emit("welcome", welcomemessage);
             SendToAuthenticatedClient(socketclient, "Welcome", welcomemessage);
           }
+    }
 
         
     socketclient.on("chat", (message) => {
@@ -138,6 +142,7 @@ socketio.on("connection", function (socketclient) {
         var chatmessage = socketclient.username + " says: " + message;
         console.log(chatmessage);
         socketio.sockets.emit("chat", chatmessage);
+        }
     });
 ```
 
@@ -163,11 +168,19 @@ Also, include the Gantt chart reflects the timeline from the Trello board. _(Mai
 
 Duration: 09-01-2020 to 09-10-2020
 
+### Sprint 1 
+
+Duration: 09-11-2020 to 10-01-2020
+
 #### Completed Tasks: 
 
 1. Use cases defined
 2. Use case diagram made
 3. Gantt chart created in Trello
+4. Ability to send message to everyone 
+5. Login functionality 
+6. Send messages to indiviuals
+7. Read messages that have been sent to you
 
 #### Contributions: 
 
@@ -187,7 +200,7 @@ Finally, this meeting should improve your next sprint drastically and understand
 
 | Good     |   Could have been better    |  How to improve?  |
 |----------|:---------------------------:|------------------:|
-|          |                             |                   |
+|   x      |                             |                   |
 
 
 # User guide/Demo
