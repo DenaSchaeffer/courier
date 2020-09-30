@@ -77,7 +77,20 @@
 			<button type="button" id="dark-mode" class="btn btn-light" onclick="toggleDarkMode()">TOGGLE DARK MODE</button>
 		</div>
 		<div id="chatUI" style="display:none;">
-			Your message:
+			<div class="dropdown">
+                <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+                <div id="myDropdown" class="dropdown-content">
+                    <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+                    <a>About</a>
+                    <a>Base</a>
+                    <a>Blog</a>
+                    <a>Contact</a>
+                    <a>Custom</a>
+                    <a>Support</a>
+                    <a>Tools</a>
+                </div>
+                </div>
+            Your message:
 			<div class="input-group">
 				<input type="text" id="yourmessage" placeholder="Enter your message ..." class="form-control">
 				<div class="input-group-append">
