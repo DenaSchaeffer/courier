@@ -207,4 +207,13 @@ Finally, this meeting should improve your next sprint drastically and understand
 
 Write as a demo with screenshots and as a guide for users to use your system.
 
-_(Start from Sprint 1, keep updating)_
+* users can toggle between light mode: 
+![light](lightmode.png)
+* or dark mode:
+![dark](darkmode.png)
+
+* users can logon to the system with their username and password:
+![login](userlogin.png)
+
+* Once logged in, the users can send messages in the chat and see who joins the chat:
+![chat](send-group-message.png)
