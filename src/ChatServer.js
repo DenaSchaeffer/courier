@@ -6,6 +6,7 @@ const port = process.env.PORT || 8080
 server.listen(port);
 console.log(`Express HTTP Server is listening on port ${port}`)
 
+//array
 var users = [];
 
 app.get('/', (request, response) => {
@@ -26,7 +27,7 @@ socketio.on("connection", function (socketclient) {
             username: username
         })
         // usersDict[username] = socketclient.id; //add user to dict --prevent multiple users later
-        // console.log(users);
+        // console.log(users);   
         console.log("Debug>got username=" + username + " password="+ password);
         if(DataLayer.checklogin(username,password)){
             socketclient.authenticated=true;
