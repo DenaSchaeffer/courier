@@ -1,0 +1,84 @@
+var http = require('http')
+var app = require('express')()
+var server = http.createServer(app)
+const port = process.env.PORT || 8080
+
+server.listen(port);
+console.log(`Express HTTP Server is listening on port ${port}`)
+
+var users = [];
+
+app.get('/', (request, response) => {
+    console.log("Got HTTP request")
+    response.sendFile(__dirname+'/index.html')
+});
+
+
+var io = require('socket.io');
+var socketio = io.listen(server);
+console.log("Socket.IO is listening at port: " + port);
+socketio.on("connection", function (socketclient) {
+    console.log("A new Socket.IO client is connected. ID= " + socketclient.id)
+    socketclient.on("login", (username,password) => {
+        socketclient.username = username;
+        users.push({
+            id: socketclient.id,
+            username: username
+        })
+        // usersDict[username] = socketclient.id; //add user to dict --prevent multiple users later
+        // console.log(users);
+        console.log("Debug>got username=" + username + " password="+ password);
+        if(DataLayer.checklogin(username,password)){
+            socketclient.authenticated=true;
+            socketclient.emit("authenticated");
+            var welcomemessage = username + " has joined the chat system!";
+            socketio.sockets.emit("newuser", users)
+            console.log(welcomemessage);
+            SendToAuthenticatedClient(socketclient, "welcome", welcomemessage);
+        }
+    });
+    socketclient.on("chat", (message) => {
+        if(!socketclient.authenticated)
+        {
+            console.log("Unauthenticated client sent a chat. Supress!");
+            return;
+        }
+        var chatmessage = socketclient.username + " says: " + message;
+        console.log(chatmessage);
+        socketio.sockets.emit("chat", chatmessage);
+    });
+    socketclient.on("privatechat", (message) => {
+        if(!socketclient.authenticated)
+        {
+            console.log("Unauthenticated client sent a chat. Supress!");
+            return;
+        }
+        var receivingUser = users.find(user => user.id === message.socketId);
+        var chatmessage = "(PRIVATE) " + socketclient.username + " says: " + message.message;
+        var sentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
+        console.log(chatmessage);
+        socketio.to(message.socketId).emit("chat", chatmessage);
+        socketio.to(socketclient.id).emit("chat", sentmessage);
+    });
+});
+var DataLayer = {
+    info: 'Data Layer Implementation for  Messenger',
+    checklogin(username,password){
+        //for testing only
+        console.log("checklogin: " + username + "/:" + password);
+        console.log("just for testing return true");
+        return true;
+    }
+}
+function SendToAuthenticatedClient(sendersocket, type, data){
+    var sockets = socketio.sockets.sockets;
+    for(var socketId in sockets){
+        var socketclient=sockets[socketId];
+        if(socketclient.authenticated){
+            socketclient.emit(type,data);
+            var logmsg= "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
+            console.log(logmsg);
+        }
+    }
+
+}
