@@ -97,9 +97,11 @@
 				<div class="form-group">
 					<label>Your message:</label>
 					<div class="input-group">
-						<select id="userSelect" name="user" class="input-group-prepend" searchable="Search here..">
-                            <option value="all" selected>All</option>
-                        </select>
+					    <div class="input-group-prepend">
+                            <select id="userSelect" name="user" class="form-control" searchable="Search here..">
+                                <option value="all" selected>All</option>
+                            </select>
+                        </div>
 						<input type="text" id="yourmessage" placeholder="Enter your message ..." class="form-control">
 						<div class="input-group-append">
 							<button type="button" class="btn btn-primary" onclick="sendmessage()">Send</button>
