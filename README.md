@@ -222,4 +222,14 @@ Write as a demo with screenshots and as a guide for users to use your system.
 ![login](userlogin.png)
 
 * Once logged in, the users can send messages in the chat and see who joins the chat:
-![chat](send-group-message.png)
+![chat](public-chat.png)
+
+* users can send a private chat via the drop down menu interface of active users:
+![private-send](private-chat.png)
+
+* users can receive a private chat: 
+![receive-private](receiving-private-chat.png)
+
+* users private messages are not seen by others that are not recipients in the same chat: 
+![private](others-cant-see-private-chat.png)
+
