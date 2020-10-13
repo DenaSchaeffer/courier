@@ -21,6 +21,7 @@
   "homepage": "https://bitbucket.org/cps490f20-team8/cps490-project-team8#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "mongodb": "^3.6.2",
     "socket.io": "^2.3.0"
   }
 }
