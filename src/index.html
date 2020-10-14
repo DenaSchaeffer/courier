@@ -48,6 +48,7 @@
                 document.getElementById('messages').innerHTML += chatmessage + "<br>";
             });
             
+            
             socketio.on("newuser", (users) => {
                 var select = document.getElementById('userSelect');
                 users.forEach(user => {
@@ -63,6 +64,24 @@
                         "You are successfully logged in! Can start chatting now.<br>";
                 });
             
+            socketio.on("registration", (result) => {
+                    var username = document.getElementById('newusername').value;
+                    if(result==="Success"){
+                        alert("...You can login now!");
+                        hideRegistrationScreen();
+                        showLoginScreen();
+                        return;
+                    }
+                    if(result==="UserExist"){
+                        alert("Username '" + username + "' exists. Please try again!" );
+                    }else{
+                        alert("User registration error. Please try again!" );
+                    }
+                    document.getElementById('newusername').value="";
+                    document.getElementById('newpassword').value="";
+                    document.getElementById('newusername').focus();
+            });
+
             function toggleDarkMode(){
                 var body = document.body;
                 var button = document.getElementById('dark-mode');
@@ -76,7 +95,32 @@
                     button.innerHTML = "LIGHT MODE"
                 }
             }
+            function register(){
+                var username = document.getElementById('newusername').value;
+                var password = document.getElementById('newpassword').value;
+                //TODO: validate username/password
+                socketio.emit("register",username,password);
+            }
+            function hideRegistrationScreen(){
+                var registrationScreen = document.getElementById("registrationScreen");
+                registrationScreen.style.display = "none";//"block" is to display
+            }
+            function showRegistrationScreen(){
+                var registrationScreen = document.getElementById("registrationScreen");
+                registrationScreen.style.display = "block";//"none" is to hide
+            }
 		</script>
+
+        <br><a href="#" onclick="showRegistrationScreen();hideLoginScreen()">
+        Do not have an account? Register here! </a>
+        </div>
+        <div style="display:none;" id="registrationScreen">
+            Register your account: <br>
+            <input type="text" id="newusername" placeholder="Enter your email as username ...">
+            <input type="password" id="newpassword" placeholder="Select your password ...">
+            <button type="button"onclick="register()">Register User</button><br>
+            <a href="#" onclick="hideRegistrationScreen();showLoginScreen()"> Login? </a>
+        </div>
 		<form id="loginUI">
 			<div class="form-group">
 				<label>Please login first: </label>

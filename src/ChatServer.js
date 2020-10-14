@@ -48,6 +48,13 @@ socketio.on("connection", function (socketclient) {
         console.log(chatmessage);
         socketio.sockets.emit("chat", chatmessage);
     });
+
+    socketclient.on("register",(username,password)=> {
+        DataLayer.addUser(username,password,(result)=>{
+        socketclient.emit("registration",result)
+        })
+    });
+    
     socketclient.on("privatechat", (message) => {
         if(!socketclient.authenticated)
         {
@@ -71,7 +78,13 @@ var DataLayer = {
         console.log("Debug>")
         return checklogin_result;
         // console.log(checklogin_result);
+    },
+    addUser(username,password,callback){
+        messengerdb.addUser
+        (username,password, (result) => {
+            callback(result)})
     }
+
     // checklogin(username, password) {
     //     // for testing only
     //     console.log("checklogin: " + username + "/" + password);

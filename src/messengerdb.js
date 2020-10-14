@@ -27,3 +27,22 @@ const checklogin = async (username, password) => {
     return false
 }
 module.exports = { checklogin };
+
+const addUser = (username,password,callback) => {
+    console.log("Debug>messengerdb.addUser:"+ username + "/" + password)
+    callback("a database handling message")
+
+    var newUser = {"username": username,"password" : password}
+    users.insertOne(newUser,(err,result)=>{
+    if (err){
+        console.log("Debug>messengerdb.addUser: error for adding '" +
+                    username +"':\n", err);
+        callback("Error");
+    }else{
+        console.log("Debug>messengerdb.addUser: a new user added: \n",
+                    result.ops[0].username);
+        callback("Success")
+    }
+})
+}
+module.exports = {checklogin,addUser}
