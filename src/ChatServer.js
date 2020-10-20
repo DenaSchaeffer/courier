@@ -75,22 +75,14 @@ var DataLayer = {
     info: 'Data Layer Implementation for Messenger',
     async checklogin(username, password) {
         var checklogin_result = await messengerdb.checklogin(username, password);
-        console.log("Debug>")
+        console.log("Debug>messengerdb.checklogin: " + username + "/" + password);
         return checklogin_result;
-        // console.log(checklogin_result);
     },
     addUser(username,password,callback){
-        messengerdb.addUser
-        (username,password, (result) => {
-            callback(result)})
+        messengerdb.addUser(username,password, (result) => {
+            callback(result)
+        });
     }
-
-    // checklogin(username, password) {
-    //     // for testing only
-    //     console.log("checklogin: " + username + "/" + password);
-    //     console.log("Just for testing - return true");
-    //     return true;
-    // }
 }
 function SendToAuthenticatedClient(sendersocket, type, data){
     var sockets = socketio.sockets.sockets;
