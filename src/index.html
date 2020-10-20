@@ -17,7 +17,6 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
             var socketio = io();
-            // var io = require('socket.io');
 
             function login() {
                 var username = document.getElementById('username').value;
@@ -27,8 +26,7 @@
                     document.getElementById('messages').innerHTML += welcomemessage + "<br>";
                 });
 
-                if (socketio)
-                    socketio.emit("login", username, password);
+                socketio.emit("login", username, password);
             }
 
             function register() {

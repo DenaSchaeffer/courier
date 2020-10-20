@@ -11,7 +11,7 @@ var users = [];
 
 app.get('/', (request, response) => {
     console.log("Got HTTP request")
-    response.sendFile(__dirname+'/index.html')
+    response.sendFile(__dirname + '/index.html')
 });
 
 
@@ -20,27 +20,29 @@ var socketio = io.listen(server);
 console.log("Socket.IO is listening at port: " + port);
 socketio.on("connection", function (socketclient) {
     console.log("A new Socket.IO client is connected. ID= " + socketclient.id)
-    socketclient.on("login", (username,password) => {
+    socketclient.on("login", async (username, password) => {
+        console.log("Debug>got username=" + username + " password=" + password);
+        var checklogin = await DataLayer.checklogin(username, password);
         socketclient.username = username;
-        users.push({
-            id: socketclient.id,
-            username: username
-        })
-        // usersDict[username] = socketclient.id; //add user to dict --prevent multiple users later
-        // console.log(users);   
-        console.log("Debug>got username=" + username + " password="+ password);
-        if(DataLayer.checklogin(username,password)){
-            socketclient.authenticated=true;
+        if (checklogin) {
+            users.push({
+                id: socketclient.id,
+                username: username
+            })
+            socketclient.authenticated = true;
             socketclient.emit("authenticated");
+            socketclient.username = username;
             var welcomemessage = username + " has joined the chat system!";
-            socketio.sockets.emit("newuser", users)
             console.log(welcomemessage);
+            // socketio.sockets.emit("welcome", welcomemessage);
             SendToAuthenticatedClient(socketclient, "welcome", welcomemessage);
+        } else {
+            console.log("Debug>DataLayer.checklogin->result=false");
+            socketclient.emit("loginfailed");
         }
     });
     socketclient.on("chat", (message) => {
-        if(!socketclient.authenticated)
-        {
+        if (!socketclient.authenticated) {
             console.log("Unauthenticated client sent a chat. Supress!");
             return;
         }
@@ -49,15 +51,14 @@ socketio.on("connection", function (socketclient) {
         socketio.sockets.emit("chat", chatmessage);
     });
 
-    socketclient.on("register",(username,password)=> {
-        DataLayer.addUser(username,password,(result)=>{
-        socketclient.emit("registration",result)
-        })
+    socketclient.on("register", (username, password) => {
+        DataLayer.addUser(username, password, (result) => {
+            socketclient.emit("registration", result);
+        });
     });
-    
+
     socketclient.on("privatechat", (message) => {
-        if(!socketclient.authenticated)
-        {
+        if (!socketclient.authenticated) {
             console.log("Unauthenticated client sent a chat. Supress!");
             return;
         }
@@ -75,22 +76,21 @@ var DataLayer = {
     info: 'Data Layer Implementation for Messenger',
     async checklogin(username, password) {
         var checklogin_result = await messengerdb.checklogin(username, password);
-        console.log("Debug>messengerdb.checklogin: " + username + "/" + password);
         return checklogin_result;
     },
-    addUser(username,password,callback){
-        messengerdb.addUser(username,password, (result) => {
-            callback(result)
+    addUser(username, password, callback) {
+        messengerdb.addUser(username, password, (result) => {
+            callback(result);
         });
     }
 }
-function SendToAuthenticatedClient(sendersocket, type, data){
+function SendToAuthenticatedClient(sendersocket, type, data) {
     var sockets = socketio.sockets.sockets;
-    for(var socketId in sockets){
-        var socketclient=sockets[socketId];
-        if(socketclient.authenticated){
-            socketclient.emit(type,data);
-            var logmsg= "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
+    for (var socketId in sockets) {
+        var socketclient = sockets[socketId];
+        if (socketclient.authenticated) {
+            socketclient.emit(type, data);
+            var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
             console.log(logmsg);
         }
     }

@@ -18,6 +18,7 @@ const getDb = () => {
     return db;
 }
 const checklogin = async (username, password) => {
+    console.log("Debug>messengerdb.checklogin: " + username + "/" + password);
     var users = getDb().collection("users");
     var user = await users.findOne({ username: username, password: password });
     if (user != null && user.username == username) {
@@ -26,8 +27,6 @@ const checklogin = async (username, password) => {
     }
     return false
 }
-module.exports = { checklogin };
-
 const addUser = (username, password, callback) => {
     console.log("Debug>messengerdb.addUser:" + username + "/" + password)
     var users = getDb().collection("users");
@@ -49,6 +48,6 @@ const addUser = (username, password, callback) => {
                 }
             });
         }
-    })
+    });
 }
 module.exports = { checklogin, addUser }
