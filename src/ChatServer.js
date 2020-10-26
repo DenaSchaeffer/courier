@@ -9,6 +9,8 @@ console.log(`Express HTTP Server is listening on port ${port}`)
 //array
 var users = [];
 
+
+
 app.get('/', (request, response) => {
     console.log("Got HTTP request")
     response.sendFile(__dirname + '/index.html')
@@ -52,9 +54,14 @@ socketio.on("connection", function (socketclient) {
     });
 
     socketclient.on("register", (username, password) => {
-        DataLayer.addUser(username, password, (result) => {
+        if (validateUsername(username) && validatePassword(password)){
+            DataLayer.addUser(username, password, (result) => {
             socketclient.emit("registration", result);
-        });
+            });
+        } else {
+            var result = "invalid login"
+            socketclient.emit("registration", result);
+        }
     });
 
     socketclient.on("privatechat", (message) => {
@@ -95,3 +102,13 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
         }
     }
 }
+
+function validateUsername(username){
+    return (username && username.length > 4);
+}
+
+function validatePassword (password){
+    //require at least one digit, one upper and lower case letter
+    return /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(password);
+}
+
