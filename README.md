@@ -39,6 +39,7 @@ Source code repository (private access): https://bitbucket.org/cps490f20-team8/c
 
 | Date     |   Version     |  Description |
 |----------|:-------------:|-------------:|
+|10/28/2020|  0.3          | Sprint 2     |
 |09/30/2020|  0.2          | Sprint 1     |
 |09/10/2020|  0.1          | added details|
 |09/03/2020|  0.0          | Init draft   |
@@ -52,8 +53,8 @@ The messenger application is a live-chat application that communicates between t
 
 # System Analysis
 
-* In the current state of the application, sprint 1, we were able to deploy our application to Heroku so that the hosting is taken care of. 
-* With this, the application does not have to be spun up locally to interact with the application everytime
+* In the current state of the application, sprint 2, we are able to deploy our application to Heroku so that the hosting is taken care of. 
+* With this, the application does not have to be spun up locally to interact with the application everytime. This allows users to access the app who are not on the local machine.
 
 ## User Requirements
 
@@ -78,8 +79,8 @@ The messenger application is a live-chat application that communicates between t
 
 # System Design
 
-* Our system is designed such that a user must login before they are able to access the application
-* Once logged in, the user is able to send messages to everyone, send messages individually, or view the messages they have been sent
+* Our system is designed such that a user must login before they are able to access the application.
+* Once logged in, the user is able to send messages to everyone, send messages privately, or view the messages they have been sent.
 
 ## Use-Case Realization
 
@@ -87,14 +88,38 @@ The messenger application is a live-chat application that communicates between t
 
 ## Database 
 
-_(Start from Sprint 3, keep updating)_
+* MongoDB is the database hosting the data for our app. It stores the registered user data into a JSON file that is later parsed through upon login.
 
 ## User Interface
 
-* our first distinctive UI element that we have implemnted into our system is a Dark Mode toggle button. 
-* this implementation allows the end user to click a button to change the interface color depending on preference. 
+* Our first distinctive UI element that we have implemented into our system is a Dark Mode toggle button. 
+* This implementation allows the end user to click a button to change the interface color depending on preference.
+* Our second implementation is having read receipts on messages a user has sent.
+* Our third implementation is showing when a user is typing to a group. 
 
 # Implementation
+## Sprint 2
+* During this sprint, we were working on the smaller details for our messenger application.
+* We implemented further use cases to our app:
+1. Users need to login with username/password. Invalid username/password cannot be logged in
+2. Anyone can register for a new account to log in
+3. Only logged-in users can send/receive messages (any)
+4. Logged-in users can logout
+5. Logged-in users can create a group chat (more than 2 members)
+6. Logged-in users in a group chat can send/receive messages from the group
+7. Seperated chat window for group chat
+8. Read receipts
+9. User typing notification
+* Similar to sprint 1, the implementations were deployed on Heroku, furthering our development of the ChatServer.js file in node and updating the home page in HTML.
+* The updates to ChatServer.js are in the code snippets below:
+
+```
+//ADD STUFF HERE!!!!!!
+```
+## Deployment
+
+* Our team deployed our application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code, and have the ability to create a dynamic web application.
+
 ## Sprint 1
 
 * During this sprint, we were mainly focused on the funtionality of our messenger application. 
@@ -148,7 +173,7 @@ socketio.on("connection", function (socketclient) {
 
 ## Deployment
 
-* Our team decied to deploy on application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code and have the ability to create a dynamic web application.
+* Our team decided to deploy the application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code and have the ability to create a dynamic web application.
 
 # Software Process Management
 
@@ -197,7 +222,28 @@ Duration: 09-11-2020 to 10-01-2020
 3.  Justen Stall, 4 hours, contributed in README, class code updates, powerpoint slides 
 4.  Dena Schaeffer, 4 hours, contributed in README, class code updates, powerpoint slides 
 
+### Sprint 2
+#### Completed Tasks:
+1. 
+
+Duration: 
+
+
+#### Contributions: 
+
+1.  Jacob Scheetz, 8 hours, contributed in README, class code updates, powerpoint slides 
+2.  Beth Hosek 2, 8 hours, contributed in README, class code updates, powerpoint slides 
+3.  Justen Stall, 8 hours, contributed in README, class code updates, powerpoint slides 
+4.  Dena Schaeffer, 8 hours, contributed in README, class code updates, powerpoint slides 
+
 #### Sprint Retrospective:
+### Sprint 2: ###
+```
+ADD STUFF HERE
+```
+| Good     |   Could have been better    |  How to improve?  |
+|----------|:---------------------------:|------------------:|
+|   x      |                             |                   |
 
 ### Sprint 1: ###
 * We felt that working on the information on a regular basis as it was being discussed in class helped improve our understnafding of what we were developing
