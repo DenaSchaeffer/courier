@@ -13,8 +13,7 @@
 <body>
     <div class="container">
         <h1 id="title" class="pt-3">Messenger 0.2</h1>
-        <p id="subtitle" class="lead">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob Scheetz in CPS490
-        </p>
+        <p id="subtitle" class="lead">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob Scheetz in CPS490</p>
         <script src="/socket.io/socket.io.js"></script>
         <script>
             var socketio = io();
@@ -54,11 +53,6 @@
                 }
             }
 
-            function typing() {
-                console.log("typing");
-                socketio.emit("typing")
-            }
-
             function toggleDarkMode() {
                 var body = document.body;
                 var button = document.getElementById('dark-mode');
@@ -93,14 +87,15 @@
                 loginScreen.style.display = 'block';
             }
 
+             function hideChatScreen() {
+                var chatScreen = document.getElementById('chatUI');
+                chatScreen.style.display = 'none';
+            }
+
             socketio.on("chat", (chatmessage) => {
                 document.getElementById('messages').innerHTML += chatmessage + "<br>";
             });
-            
-            socketio.on("typing", (typingmessage) => {
-                document.getElementById("typingMessage").innerHTML = typingmessage;
-                setTimeout(() => { document.getElementById("typingMessage").innerHTML = ""; }, 5000);
-            });
+
 
             socketio.on("newuser", (users) => {
                 var select = document.getElementById('userSelect');
@@ -109,6 +104,8 @@
                     select.innerHTML += userOption;
                 });
             });
+
+            
 
             socketio.on("authenticated", () => {
                 document.getElementById("loginUI").style.display = "none";
@@ -127,10 +124,10 @@
                 }
                 if (result === "UserExist") {
                     alert("Username '" + username + "' exists. Please try again.");
-                }
-                if (result == "invalid login") {
+                } 
+                if (result == "invalid login"){
                     alert("Username too short and/or insecure password! Please try again.");
-                } else {
+                }else {
                     alert("User registration error. Please try again.");
                 }
                 document.getElementById('newusername').value = "";
@@ -141,9 +138,24 @@
             socketio.on("loginfailed", () => {
                 alert("Invalid username or password. Please try again.");
             });
+ 
+ 
+            //logout function
+            function logout(){
+            socketio.emit("logout");
+            hideChatScreen();
+            showLoginScreen();
+            socketio.on("userleft", (logoutmessage) => {
+                        document.getElementById('messages').innerHTML += logoutmessage + "<br>";
+                    }); 
+            }
 
         </script>
 
+        <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
         <script src="/socket.io/socket.io.js"></script>
 
         <form id="registrationScreen" style="display:none;" class="col-md-6">
@@ -174,8 +186,12 @@
         </form>
 
         <button type="button" id="dark-mode" class="btn btn-light" onclick="toggleDarkMode()">TOGGLE DARK MODE</button>
+        
+            
+       
 
         <div id="chatUI" style="display:none;">
+            <button type="button" id="logoutbutton" class="btn btn-primary" onclick="logout()"> Logout </button>
             <form>
                 <div class="form-group">
                     <label>Your message:</label>
@@ -183,14 +199,12 @@
                         <select id="userSelect" name="user" class="input-group-prepend" searchable="Search here..">
                             <option value="all" selected>All</option>
                         </select>
-                        <input type="text" oninput="typing()" id="yourmessage"
-                            placeholder="Enter your message ..." class="form-control">
+                        <input type="text" oninput="onKeyDownNotEnter()" id="yourmessage" placeholder="Enter your message ..." class="form-control">
                         <div class="input-group-append">
                             <button type="button" class="btn btn-primary" onclick="sendmessage()">Send</button>
                         </div>
                     </div>
                 </div>
-                <p id="typingMessage"></p>
             </form>
             <div id="messages"></div>
         </div>

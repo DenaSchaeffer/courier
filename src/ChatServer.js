@@ -84,6 +84,15 @@ socketio.on("connection", function (socketclient) {
         var typingmessage = socketclient.username + " is typing...";
         socketclient.broadcast.emit("typing", typingmessage);
     });
+
+    socketclient.on("logout", () =>{
+    var logoutmessage = socketclient.username + " has disconnected from the chat";
+    users.filter(user => user.id !== socketclient.id);
+    socketclient.emit("userleft", logoutmessage);
+    socketclient.disconnect();
+    socketclient.id = null;
+    });
+
 });
 
 var messengerdb = require('./messengerdb');
@@ -119,6 +128,8 @@ function validatePassword(password) {
     //require at least one digit, one upper and lower case letter
     return /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(password);
 }
+
+
 
 
 
