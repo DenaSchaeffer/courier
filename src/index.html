@@ -13,7 +13,8 @@
 <body>
     <div class="container">
         <h1 id="title" class="pt-3">Messenger 0.2</h1>
-        <p id="subtitle" class="lead">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob Scheetz in CPS490</p>
+        <p id="subtitle" class="lead">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob Scheetz in CPS490
+        </p>
         <script src="/socket.io/socket.io.js"></script>
         <script>
             var socketio = io();
@@ -53,6 +54,11 @@
                 }
             }
 
+            function typing() {
+                console.log("typing");
+                socketio.emit("typing")
+            }
+
             function toggleDarkMode() {
                 var body = document.body;
                 var button = document.getElementById('dark-mode');
@@ -90,7 +96,11 @@
             socketio.on("chat", (chatmessage) => {
                 document.getElementById('messages').innerHTML += chatmessage + "<br>";
             });
-
+            
+            socketio.on("typing", (typingmessage) => {
+                document.getElementById("typingMessage").innerHTML = typingmessage;
+                setTimeout(() => { document.getElementById("typingMessage").innerHTML = ""; }, 5000);
+            });
 
             socketio.on("newuser", (users) => {
                 var select = document.getElementById('userSelect');
@@ -117,10 +127,10 @@
                 }
                 if (result === "UserExist") {
                     alert("Username '" + username + "' exists. Please try again.");
-                } 
-                if (result == "invalid login"){
+                }
+                if (result == "invalid login") {
                     alert("Username too short and/or insecure password! Please try again.");
-                }else {
+                } else {
                     alert("User registration error. Please try again.");
                 }
                 document.getElementById('newusername').value = "";
@@ -132,37 +142,8 @@
                 alert("Invalid username or password. Please try again.");
             });
 
-            //typing functionality
-        $(document).ready(function(){
-        $('#message-box').keypress((e)=>{
-        if(e.which!=13){
-          typing=true
-          socketio.emit('typing', {user:username, typing:true})
-          clearTimeout(timeout)
-          timeout=setTimeout(typingTimeout, 3000)
-        }else{
-          clearTimeout(timeout)
-          typingTimeout()
-          //sendMessage() function will be called once the user hits enter
-          sendMessage()
-        }
-      })
-
-      //code explained later
-      socketio.on('display', (data)=>{
-        if(data.typing==true)
-          $('.typing').text(`${data.user} is typing...`)
-        else
-          $('.typing').text("")
-      })
- })    
-
         </script>
 
-        <script
-            src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
         <script src="/socket.io/socket.io.js"></script>
 
         <form id="registrationScreen" style="display:none;" class="col-md-6">
@@ -202,12 +183,14 @@
                         <select id="userSelect" name="user" class="input-group-prepend" searchable="Search here..">
                             <option value="all" selected>All</option>
                         </select>
-                        <input type="text" oninput="onKeyDownNotEnter()" id="yourmessage" placeholder="Enter your message ..." class="form-control">
+                        <input type="text" oninput="typing()" id="yourmessage"
+                            placeholder="Enter your message ..." class="form-control">
                         <div class="input-group-append">
                             <button type="button" class="btn btn-primary" onclick="sendmessage()">Send</button>
                         </div>
                     </div>
                 </div>
+                <p id="typingMessage"></p>
             </form>
             <div id="messages"></div>
         </div>

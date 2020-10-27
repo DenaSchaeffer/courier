@@ -3,8 +3,8 @@ var app = require('express')()
 var server = http.createServer(app)
 const port = process.env.PORT || 8080
 
-var typing=false;
-var timeout=undefined;
+var typing = false;
+var timeout = undefined;
 
 server.listen(port);
 console.log(`Express HTTP Server is listening on port ${port}`)
@@ -57,9 +57,9 @@ socketio.on("connection", function (socketclient) {
     });
 
     socketclient.on("register", (username, password) => {
-        if (validateUsername(username) && validatePassword(password)){
+        if (validateUsername(username) && validatePassword(password)) {
             DataLayer.addUser(username, password, (result) => {
-            socketclient.emit("registration", result);
+                socketclient.emit("registration", result);
             });
         } else {
             var result = "invalid login"
@@ -78,6 +78,11 @@ socketio.on("connection", function (socketclient) {
         console.log(chatmessage);
         socketio.to(message.socketId).emit("chat", chatmessage);
         socketio.to(socketclient.id).emit("chat", sentmessage);
+    });
+
+    socketclient.on("typing", () => {
+        var typingmessage = socketclient.username + " is typing...";
+        socketclient.broadcast.emit("typing", typingmessage);
     });
 });
 
@@ -106,11 +111,11 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
     }
 }
 
-function validateUsername(username){
+function validateUsername(username) {
     return (username && username.length > 4);
 }
 
-function validatePassword (password){
+function validatePassword(password) {
     //require at least one digit, one upper and lower case letter
     return /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(password);
 }
