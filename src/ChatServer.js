@@ -3,6 +3,9 @@ var app = require('express')()
 var server = http.createServer(app)
 const port = process.env.PORT || 8080
 
+var typing=false;
+var timeout=undefined;
+
 server.listen(port);
 console.log(`Express HTTP Server is listening on port ${port}`)
 
@@ -111,4 +114,6 @@ function validatePassword (password){
     //require at least one digit, one upper and lower case letter
     return /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(password);
 }
+
+
 
