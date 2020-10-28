@@ -3,16 +3,11 @@ var app = require('express')()
 var server = http.createServer(app)
 const port = process.env.PORT || 8080
 
-var typing = false;
-var timeout = undefined;
-
 server.listen(port);
 console.log(`Express HTTP Server is listening on port ${port}`)
 
 //array
 var users = [];
-
-
 
 app.get('/', (request, response) => {
     console.log("Got HTTP request")
@@ -40,6 +35,7 @@ socketio.on("connection", function (socketclient) {
             var welcomemessage = username + " has joined the chat system!";
             console.log(welcomemessage);
             // socketio.sockets.emit("welcome", welcomemessage);
+            socketio.emit("newuser", users);
             SendToAuthenticatedClient(socketclient, "welcome", welcomemessage);
         } else {
             console.log("Debug>DataLayer.checklogin->result=false");
@@ -85,12 +81,12 @@ socketio.on("connection", function (socketclient) {
         socketclient.broadcast.emit("typing", typingmessage);
     });
 
-    socketclient.on("logout", () =>{
-    var logoutmessage = socketclient.username + " has disconnected from the chat";
-    users.filter(user => user.id !== socketclient.id);
-    socketclient.emit("userleft", logoutmessage);
-    socketclient.disconnect();
-    socketclient.id = null;
+    socketclient.on("logout", () => {
+        var logoutmessage = socketclient.username + " has disconnected from the chat";
+        users.filter(user => user.id !== socketclient.id);
+        socketclient.emit("userleft", logoutmessage, users);
+        socketclient.disconnect();
+        // socketclient.id = null;
     });
 
 });
