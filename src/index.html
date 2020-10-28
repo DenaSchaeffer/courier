@@ -45,6 +45,17 @@
         }
 
         function sendmessage() {
+            if (recipient === 'all') {
+                socketio.emit("chat", document.getElementById('yourmessage').value);
+            } else {
+                console.log('sending private chat');
+                socketio.emit("privatechat", {
+                    message: document.getElementById('yourmessage').value,
+                    socketId: recipient
+                });
+                console.log('private chat emitted');
+            }
+
             // var userSelect = document.getElementById("userSelect");
             // var socketId = userSelect.options[userSelect.selectedIndex].value;
             // if (socketId === 'all') {
@@ -55,16 +66,6 @@
             //         socketId: socketId
             //     });
             // }
-
-            // New
-            if (recipient === 'all') {
-                socketio.emit("chat", document.getElementById('yourmessage').value);
-            } else {
-                socketio.emit("privatechat", {
-                    message: document.getElementById('yourmessage').value,
-                    socketId: recipient
-                });
-            }
         }
 
         function createGroup() {
@@ -80,14 +81,26 @@
         function toggleDarkMode() {
             var body = document.body;
             var button = document.getElementById('dark-mode');
+            var navbar = document.getElementById('navbar');
+            var userList = document.getElementById("userList");
 
             if (body.style.backgroundColor === "black") {
                 body.style.backgroundColor = "white";
                 body.style.color = "black";
-                button.innerHTML = "Dark Mode"
+                navbar.classList.remove('bg-dark');
+                navbar.classList.remove('navbar-dark');
+                navbar.classList.add('bg-light');
+                navbar.classList.add('navbar-light');
+                userList.style.color = 'rgb(33, 37, 41)';
+                button.innerHTML = "Dark Mode";
             } else {
                 body.style.backgroundColor = "black";
                 body.style.color = "white";
+                navbar.classList.remove('bg-light');
+                navbar.classList.remove('navbar-light');
+                navbar.classList.add('bg-dark');
+                navbar.classList.add('navbar-dark');
+                userList.style.color = 'rgb(33, 37, 41)';
                 button.innerHTML = "Light Mode"
             }
         }
@@ -141,6 +154,8 @@
             groupForm.style.display = 'block';
         }
 
+        /*  */
+
         socketio.on("chat", (chatmessage) => {
             document.getElementById('messages').innerHTML += chatmessage + "<br>";
         });
@@ -159,9 +174,9 @@
                 var userOption = '<option value="' + user.id + '">' + user.username + '</option>';
                 select.innerHTML += userOption;
             });
-            list.innerHTML = '<a class="list-group-item active" data-toggle="list" onclick="recipient = \'all\'">All Users</a>';
+            list.innerHTML = '<div class="list-group-item active" data-toggle="list" onclick="recipient = \'all\'">All Users</div>';
             users.forEach(user => {
-                var userLink = '<a class="list-group-item" data-toggle="list" onclick="recipient = \'' + user.id + '\'">' + user.username + '</a>';
+                var userLink = '<div class="list-group-item" data-toggle="list" onclick="recipient = \'' + user.id + '\'">' + user.username + '</div>';
                 list.innerHTML += userLink;
             })
         });
@@ -204,7 +219,7 @@
 
     </script>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light sticky-top mb-3">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -217,46 +232,48 @@
         <button type="button" id="dark-mode" class="btn btn-light" onclick="toggleDarkMode()">Dark
             Mode</button>
     </nav>
-    <h1 id="title" class="pt-3 pl-3">Messenger 0.2</h1>
-    <p id="subtitle" class="lead pl-3">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob Scheetz in
-        CPS490
-    </p>
+    <!-- <h1 id="title" class="pt-3 pl-3">Messenger 0.2</h1> -->
 
-    <form id="registrationScreen" style="display:none;" class="col-md-6">
-        <div class="form-group">
-            <label>Register your account:</label>
-            <input type="text" id="newusername" class="form-control" placeholder="Enter your email as username ...">
-        </div>
-        <div class="form-group">
-            <input type="password" id="newpassword" class="form-control" placeholder="Select your password ...">
-        </div>
-        <div class="form-group">
-            <button type="button" class="btn btn-primary" onclick="register()">Register User</button><br>
-        </div>
-        <a href="#" onclick="hideRegistrationScreen();showLoginScreen()">Already have an account? Login
-            here.</a>
-    </form>
-    <form id="loginUI" class="col-md-6">
-        <div class="form-group">
-            <label>Please login first: </label>
-            <input type="text" id="username" placeholder="Enter your name ..." class="form-control">
-        </div>
-        <div class="form-group">
-            <input type="password" id="password" placeholder="Password" class="form-control">
-        </div>
-        <div class="form-group">
-            <button type="button" class="btn btn-primary" onclick="login()">Join</button>
-        </div>
-        <a href="#" onclick="showRegistrationScreen();hideLoginScreen()">Don't have an account? Register
-            here!</a>
-    </form>
+    <div id="registrationScreen" class="container" style="display:none;">
+        <form class="col-md-6 mx-auto">
+            <h4 class="pb-2">Register an account</h4>
+            <div class="form-group">
+                <!-- <label>Register your account:</label> -->
+                <input type="text" id="newusername" class="form-control" placeholder="Enter a username ...">
+            </div>
+            <div class="form-group">
+                <input type="password" id="newpassword" class="form-control" placeholder="Create your password ...">
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" onclick="register()">Register</button><br>
+            </div>
+            <a href="#" onclick="hideRegistrationScreen();showLoginScreen()">Already have an account? Login
+                here.</a>
+        </form>
+    </div>
+    <div id="loginUI" class="container">
+        <form class="col-md-6 mx-auto">
+            <h4 class="pb-2">Login</h4>
+            <div class="form-group">
+                <input type="text" id="username" placeholder="Enter your name ..." class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Password" class="form-control">
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" onclick="login()">Join</button>
+            </div>
+            <a href="#" onclick="showRegistrationScreen();hideLoginScreen()">Don't have an account? Register
+                here!</a>
+        </form>
+    </div>
 
     <div id="chatUI" style="display:none;">
         <div class="d-flex flex-row" style="height: 100%;">
             <div class="col-3">
                 <button class="btn btn-primary mb-3" onclick="hideMessageForm(); showGroupForm();">New Group</button>
                 <div class="list-group" id="userList">
-                    <a class="list-group-item active" data-toggle="list" onclick="recipient = 'all'">All Users</a>
+                    <div class="list-group-item active" data-toggle="list" onclick="recipient = 'all'">All Users</div>
                 </div>
                 <button type="button" id="logoutbutton" class="btn btn-primary mt-3" onclick="logout()"> Logout
                 </button>
@@ -293,6 +310,8 @@
             </div>
         </div>
     </div>
+    <p id="subtitle" class="lead pl-3 fixed-bottom">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob
+        Scheetz in CPS490</p>
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -305,9 +324,5 @@
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
         </script>
 </body>
-
-<style>
-
-</style>
 
 </html>
