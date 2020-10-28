@@ -19,7 +19,10 @@ var io = require('socket.io');
 var socketio = io.listen(server);
 console.log("Socket.IO is listening at port: " + port);
 socketio.on("connection", function (socketclient) {
-    console.log("A new Socket.IO client is connected. ID= " + socketclient.id)
+    console.log("A new Socket.IO client is connected. ID= " + socketclient.id);
+
+    /* LOGIN/REGISTRATION EVENTSd */
+
     socketclient.on("login", async (username, password) => {
         console.log("Debug>got username=" + username + " password=" + password);
         var checklogin = await DataLayer.checklogin(username, password);
@@ -42,15 +45,6 @@ socketio.on("connection", function (socketclient) {
             socketclient.emit("loginfailed");
         }
     });
-    socketclient.on("chat", (message) => {
-        if (!socketclient.authenticated) {
-            console.log("Unauthenticated client sent a chat. Supress!");
-            return;
-        }
-        var chatmessage = socketclient.username + " says: " + message;
-        console.log(chatmessage);
-        socketio.sockets.emit("chat", chatmessage);
-    });
 
     socketclient.on("register", (username, password) => {
         if (validateUsername(username) && validatePassword(password)) {
@@ -61,6 +55,26 @@ socketio.on("connection", function (socketclient) {
             var result = "invalid login"
             socketclient.emit("registration", result);
         }
+    });
+
+    socketclient.on("logout", () => {
+        var logoutmessage = socketclient.username + " has disconnected from the chat";
+        users.filter(user => user.id !== socketclient.id);
+        socketclient.emit("userleft", logoutmessage, users);
+        socketclient.disconnect();
+        // socketclient.id = null;
+    });
+
+    /* CHAT FUNCTIONALITY */
+
+    socketclient.on("chat", (message) => {
+        if (!socketclient.authenticated) {
+            console.log("Unauthenticated client sent a chat. Supress!");
+            return;
+        }
+        var chatmessage = socketclient.username + " says: " + message;
+        console.log(chatmessage);
+        socketio.sockets.emit("chat", chatmessage);
     });
 
     socketclient.on("privatechat", (message) => {
@@ -81,15 +95,9 @@ socketio.on("connection", function (socketclient) {
         socketclient.broadcast.emit("typing", typingmessage);
     });
 
-    socketclient.on("logout", () => {
-        var logoutmessage = socketclient.username + " has disconnected from the chat";
-        users.filter(user => user.id !== socketclient.id);
-        socketclient.emit("userleft", logoutmessage, users);
-        socketclient.disconnect();
-        // socketclient.id = null;
-    });
-
 });
+
+/* DATABASE FUNCTIONS */
 
 var messengerdb = require('./messengerdb');
 var DataLayer = {
