@@ -225,6 +225,8 @@
 
     </script>
 
+    <!-- NAVBAR -->
+
     <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light sticky-top mb-3">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -239,6 +241,8 @@
             Mode</button>
     </nav>
     <!-- <h1 id="title" class="pt-3 pl-3">Messenger 0.2</h1> -->
+
+    <!-- REGISTRATION SCREEN -->
 
     <div id="registrationScreen" class="container" style="display:none;">
         <form class="col-md-6 mx-auto">
@@ -257,6 +261,9 @@
                 here.</a>
         </form>
     </div>
+
+    <!-- LOGIN SCREEN -->
+
     <div id="loginUI" class="container">
         <form class="col-md-6 mx-auto">
             <h4 class="pb-2">Login</h4>
@@ -274,8 +281,13 @@
         </form>
     </div>
 
+    <!-- CHAT SCREEN -->
+
     <div id="chatUI" style="display:none;">
         <div class="d-flex flex-row" style="height: 100%;">
+
+            <!-- SIDEBAR/USER LIST -->
+
             <div class="col-3">
                 <button class="btn btn-primary mb-3" onclick="hideMessageForm(); showGroupForm();">New Group</button>
                 <div class="list-group" id="userList">
@@ -284,7 +296,13 @@
                 <button type="button" id="logoutbutton" class="btn btn-primary mt-3" onclick="logout()"> Logout
                 </button>
             </div>
+
+            <!-- MAIN AREA -->
+
             <div class="col-9">
+                
+                <!-- MESSAGE SCREEN -->
+                
                 <div id="messageForm">
                     <!-- <form onsubmit="sendmessage()"> -->
                     <form>
@@ -303,6 +321,9 @@
                     </form>
                     <div id="messages"></div>
                 </div>
+                
+                <!-- CREATE GROUP SCREEN -->
+
                 <form id="createGroup" style="display: none;">
                     <div class="form-group">
                         <label for="userSelect">Add Users to Group</label>
@@ -317,6 +338,9 @@
             </div>
         </div>
     </div>
+
+    <!-- FOOTER -->
+
     <p id="subtitle" class="lead pl-3 fixed-bottom">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob
         Scheetz in CPS490</p>
 
