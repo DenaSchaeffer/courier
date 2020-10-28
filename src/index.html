@@ -245,7 +245,7 @@
     <!-- REGISTRATION SCREEN -->
 
     <div id="registrationScreen" class="container" style="display:none;">
-        <form class="col-md-6 mx-auto">
+        <form class="col-md-6 mx-auto" onsubmit="register(); return false;">
             <h4 class="pb-2">Register an account</h4>
             <div class="form-group">
                 <!-- <label>Register your account:</label> -->
@@ -255,7 +255,7 @@
                 <input type="password" id="newpassword" class="form-control" placeholder="Create your password ...">
             </div>
             <div class="form-group">
-                <button type="button" class="btn btn-primary" onclick="register()">Register</button><br>
+                <button type="submit" class="btn btn-primary">Register</button><br>
             </div>
             <a href="#" onclick="hideRegistrationScreen();showLoginScreen()">Already have an account? Login
                 here.</a>
@@ -265,7 +265,7 @@
     <!-- LOGIN SCREEN -->
 
     <div id="loginUI" class="container">
-        <form class="col-md-6 mx-auto">
+        <form class="col-md-6 mx-auto" onsubmit="login(); return false;">
             <h4 class="pb-2">Login</h4>
             <div class="form-group">
                 <input type="text" id="username" placeholder="Enter your name ..." class="form-control">
@@ -274,7 +274,7 @@
                 <input type="password" id="password" placeholder="Password" class="form-control">
             </div>
             <div class="form-group">
-                <button type="button" class="btn btn-primary" onclick="login()">Join</button>
+                <button type="submit" class="btn btn-primary">Login</button>
             </div>
             <a href="#" onclick="showRegistrationScreen();hideLoginScreen()">Don't have an account? Register
                 here!</a>
@@ -304,16 +304,15 @@
                 <!-- MESSAGE SCREEN -->
                 
                 <div id="messageForm">
-                    <!-- <form onsubmit="sendmessage()"> -->
-                    <form>
+                    <form onsubmit="sendmessage(); return false;">
+                    <!-- <form> -->
                         <div class="form-group">
                             <label>Your message:</label>
                             <div class="input-group">
                                 <input type="text" oninput="typing()" id="yourmessage"
                                     placeholder="Enter your message ..." class="form-control">
                                 <div class="input-group-append">
-                                    <button type="button" class="btn btn-primary" onclick="sendmessage()">Send</button>
-                                    <!-- <input type="submit" class="btn btn-primary" value="Send"> -->
+                                    <button type="submit" class="btn btn-primary">Send</button>
                                 </div>
                             </div>
                         </div>
@@ -324,7 +323,7 @@
                 
                 <!-- CREATE GROUP SCREEN -->
 
-                <form id="createGroup" style="display: none;">
+                <form id="createGroup" style="display: none;" onsubmit="createGroup(); hideGroupForm(); showMessageForm(); return false;">
                     <div class="form-group">
                         <label for="userSelect">Add Users to Group</label>
                         <select multiple id="userSelect" class="form-control" name="user">
@@ -332,7 +331,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-success" type="button" onclick="createGroup(); hideGroupForm(); showMessageForm();">Create Group</button>
+                        <button class="btn btn-success" type="submit">Create Group</button>
                     </div>
                 </form>
             </div>
