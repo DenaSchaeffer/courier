@@ -21,7 +21,7 @@ console.log("Socket.IO is listening at port: " + port);
 socketio.on("connection", function (socketclient) {
     console.log("A new Socket.IO client is connected. ID= " + socketclient.id);
 
-    /* LOGIN/REGISTRATION EVENTSd */
+    /* LOGIN/REGISTRATION EVENTS */
 
     socketclient.on("login", async (username, password) => {
         console.log("Debug>got username=" + username + " password=" + password);

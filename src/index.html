@@ -16,6 +16,8 @@
         var socketio = io();
         var recipient = 'all';
 
+        /* LOGIN/REGISTRATION FUNCTIONS */
+
         function login() {
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
@@ -43,6 +45,8 @@
             hideChatScreen();
             showLoginScreen();
         }
+
+        /*  */
 
         function sendmessage() {
             if (recipient === 'all') {
@@ -105,6 +109,8 @@
             }
         }
 
+        /* UTILITY FUNCTIONS */
+
         function hideRegistrationScreen() {
             var registrationScreen = document.getElementById('registrationScreen');
             registrationScreen.style.display = 'none';
@@ -154,7 +160,7 @@
             groupForm.style.display = 'block';
         }
 
-        /*  */
+        /* SOCKETIO EVENT HANDLING */
 
         socketio.on("chat", (chatmessage) => {
             document.getElementById('messages').innerHTML += chatmessage + "<br>";
@@ -280,14 +286,16 @@
             </div>
             <div class="col-9">
                 <div id="messageForm">
-                    <form onsubmit="sendmessage()">
+                    <!-- <form onsubmit="sendmessage()"> -->
+                    <form>
                         <div class="form-group">
                             <label>Your message:</label>
                             <div class="input-group">
                                 <input type="text" oninput="typing()" id="yourmessage"
                                     placeholder="Enter your message ..." class="form-control">
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-primary">Send</button>
+                                    <button type="button" class="btn btn-primary" onclick="sendmessage()">Send</button>
+                                    <!-- <input type="submit" class="btn btn-primary" value="Send"> -->
                                 </div>
                             </div>
                         </div>
@@ -295,8 +303,7 @@
                     </form>
                     <div id="messages"></div>
                 </div>
-                <form id="createGroup" style="display: none;"
-                    onsubmit="createGroup(); hideGroupForm(); showMessageForm();">
+                <form id="createGroup" style="display: none;">
                     <div class="form-group">
                         <label for="userSelect">Add Users to Group</label>
                         <select multiple id="userSelect" class="form-control" name="user">
@@ -304,7 +311,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-success" type="submit">Create Group</button>
+                        <button class="btn btn-success" type="button" onclick="createGroup(); hideGroupForm(); showMessageForm();">Create Group</button>
                     </div>
                 </form>
             </div>
