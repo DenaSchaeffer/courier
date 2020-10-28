@@ -8,6 +8,7 @@ console.log(`Express HTTP Server is listening on port ${port}`)
 
 //array
 var users = [];
+var groups = [];
 
 app.get('/', (request, response) => {
     console.log("Got HTTP request")
@@ -90,11 +91,30 @@ socketio.on("connection", function (socketclient) {
         socketio.to(socketclient.id).emit("chat", sentmessage);
     });
 
+
+    socketclient.on("groupChat", (message) => {
+        if (!socketclient.authenticated) {
+            console.log("Unauthenticated client sent a chat. Supress!");
+            return;
+        }
+        var chatmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
+        console.log(chatmessage);
+        socketio.to(message.groupName).emit("chat", chatmessage);
+    })
+    
     socketclient.on("typing", () => {
         var typingmessage = socketclient.username + " is typing...";
         socketclient.broadcast.emit("typing", typingmessage);
     });
 
+    socketclient.on("createGroup", (groupName, selections) => {
+        selections.forEach(element => {
+            socketio.sockets.connected[element].join(groupName);
+        }); 
+        groups.push(groupName);
+        socketio.to(groupName).emit("newGroup", groupName);
+        console.log(groups);
+    });
 });
 
 /* DATABASE FUNCTIONS */
