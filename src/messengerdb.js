@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 // const uri = "mongodb+srv://stallj2:f5aMs2i7gWtN8OCe@cluster0.ldtqx.mongodb.net/messenger?retryWrites=true&w=majority";
-const uri = "mongodb+srv://admin:KROW.tooc1skal-roy@messengerdb.mdvfu.mongodb.net/MessengerDB?retryWrites=true&w=majority";
+const uri = "mongodb+srv://admin:KROW.tooc1skal-roy@messengerdb.mdvfu.mongodb.net/messenger?retryWrites=true&w=majority";
 
 const mongodbclient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 let db = null;
@@ -18,6 +18,7 @@ const getDb = () => {
     return db;
 }
 const checklogin = async (username, password) => {
+    console.log("Debug>messengerdb.checklogin: " + username + "/" + password);
     var users = getDb().collection("users");
     var user = await users.findOne({ username: username, password: password });
     if (user != null && user.username == username) {
@@ -26,4 +27,27 @@ const checklogin = async (username, password) => {
     }
     return false
 }
-module.exports = { checklogin };
+const addUser = (username, password, callback) => {
+    console.log("Debug>messengerdb.addUser:" + username + "/" + password)
+    var users = getDb().collection("users");
+    users.findOne({ username: username }).then(user => {
+        if (user && user.username === username) {
+            console.log(`Debug>messengerdb.addUser: Username '${username}' exists!`);
+            callback("UserExist");
+        } else {
+            // input validation (password strength)
+            // callback("InvalidInput");
+            var newUser = { "username": username, "password": password }
+            users.insertOne(newUser, (err, result) => {
+                if (err) {
+                    console.log("Debug>messengerdb.addUser: error for adding '" + username + "':\n", err);
+                    callback("Error");
+                } else {
+                    console.log("Debug>messengerdb.addUser: a new user added: \n", result.ops[0].username);
+                    callback("Success");
+                }
+            });
+        }
+    });
+}
+module.exports = { checklogin, addUser }
