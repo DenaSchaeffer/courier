@@ -1,17 +1,27 @@
 {
   "name": "cps490-project-team8",
   "version": "1.0.0",
-  "description": "Source: <https://bitbucket.org/capstones-cs-udayton/cps490/src/master/README.md>",
-  "main": "src/ChatServer.js",
+  "description": "Messenger Node.js App for CPS490 - Team 8",
+  "main": "ChatServer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/ChatServer.js"
+    "test": "nodemon ChatServer.js -e .html",
+    "start": "node ChatServer.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/cps490f20-team8/cps490-project-team8.git"
+    "url": "git+https://bitbucket.org/cps490f20-team8/cps490-project-team8.git"
   },
-  "author": "",
+  "keywords": [
+    "Node.js",
+    "Socket.io",
+    "Capstone"
+  ],
+  "author": "Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob Scheetz",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/cps490f20-team8/cps490-project-team8#readme"
+  "homepage": "https://bitbucket.org/cps490f20-team8/cps490-project-team8#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.6.2",
+    "socket.io": "^2.3.0"
+  }
 }
