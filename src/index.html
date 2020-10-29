@@ -14,8 +14,14 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socketio = io();
+
+        /* GLOBAL VARIABLES */
         var recipient = 'all';
         var groupRecipient = false;
+        var groups = [];
+        var messages = []; 
+        var users = [];
+        var typingTimeout;
 
         /* LOGIN/REGISTRATION FUNCTIONS */
 
@@ -24,7 +30,12 @@
             var password = document.getElementById('password').value;
 
             socketio.on("welcome", (welcomemessage) => {
-                document.getElementById('messages').innerHTML += welcomemessage + "<br>";
+                messages.push({
+                    message: welcomemessage,
+                    sender: 'all'
+                });
+                displayMessages();
+                // document.getElementById('messages').innerHTML += welcomemessage + "<br>";
             });
 
             socketio.emit("login", username, password);
@@ -47,14 +58,14 @@
             showLoginScreen();
         }
 
-        /*  */
+        /* MESSAGING FUNCTIONS */
 
         function sendmessage() {
             if (recipient === 'all') {
                 socketio.emit("chat", document.getElementById('yourmessage').value);
             } else if (groupRecipient) {
                 console.log('sending group chat');
-                socketio.emit("groupChat", {
+                socketio.emit("groupchat", {
                     message: document.getElementById('yourmessage').value,
                     groupName: recipient
                 });
@@ -66,28 +77,60 @@
                 });
                 console.log('private chat emitted');
             }
-
-            // var userSelect = document.getElementById("userSelect");
-            // var socketId = userSelect.options[userSelect.selectedIndex].value;
-            // if (socketId === 'all') {
-            //     socketio.emit("chat", document.getElementById('yourmessage').value);
-            // } else {
-            //     socketio.emit("privatechat", {
-            //         message: document.getElementById('yourmessage').value,
-            //         socketId: socketId
-            //     });
-            // }
         }
 
         function createGroup() {
-            var userSelect = document.getElementById("userSelect");
-
+            var userSelect = document.getElementById('userSelect');
+            var groupName = document.getElementById('groupName').value;
+            var selections = [];
+            selections = Array.from(userSelect.selectedOptions).map(o => o.value)
+            console.log(selections);
+            socketio.emit("creategroup", groupName, selections);
         }
 
         function typing() {
             console.log("typing");
             socketio.emit("typing")
         }
+
+        function displayMessages() {
+            var selectedMessages = messages.filter(message => message.sender === recipient);
+            var messageWindow = document.getElementById('messages');
+            messageWindow.innerHTML = '';
+            selectedMessages.forEach(message => {
+                messageWindow.innerHTML += message.message + "<br>";
+            });
+        }
+
+        function updateUserList() {
+            var list = document.getElementById("userList");
+
+            // Create "All" Option
+            list.innerHTML = '<div id="all" class="list-group-item border-bottom" data-toggle="list" onclick="selectRecipient(\'all\'); groupRecipient = false;">All Users</div>';
+
+            // Create group options (value = group name)
+            groups.forEach(group => {
+                var groupLink = '<div id="' + group + '" class="list-group-item" data-toggle="list" onclick="selectRecipient(\'' + group + '\'); groupRecipient = true;">' + group + '</div>';
+                list.innerHTML += groupLink;
+            });
+
+            // Create user options (value = socketid)
+            users.forEach(user => {
+                var userLink = '<div id="' + user.id + '" class="list-group-item" data-toggle="list" onclick="selectRecipient(\'' + user.id + '\'); groupRecipient = false;">' + user.username + '</div>';
+                list.innerHTML += userLink;
+            });
+
+            // Reset which option is selected so it matches recipient value
+            var selectedUser = document.getElementById(recipient);
+            selectedUser.classList.add('active');
+        }
+
+        function selectRecipient(newRecipient) {
+            recipient = newRecipient;
+            displayMessages();
+        }
+
+        /* OTHER FEATURES */
 
         function toggleDarkMode() {
             var body = document.body;
@@ -167,46 +210,38 @@
             groupForm.style.display = 'block';
         }
 
-        function onGroupCreate() {
-            var userSelect = document.getElementById('userSelect');
-            var groupName = document.getElementById('groupName').value;
-            var selections = [];
-            selections = Array.from(userSelect.selectedOptions).map(o => o.value)
-            console.log(selections);
-            socketio.emit("createGroup", groupName, selections);
-        }
-
-        /* SOCKETIO EVENT HANDLING */
+        /* SOCKET.IO EVENT HANDLING */
 
         socketio.on("chat", (chatmessage) => {
-            document.getElementById('messages').innerHTML += chatmessage + "<br>";
+            // clearTimeout(typingTimeout);
+            messages.push(chatmessage);
+            displayMessages();
+            // document.getElementById('messages').innerHTML += chatmessage.message + "<br>";
         });
 
         socketio.on("typing", (typingmessage) => {
+            // clearTimeout(typingTimeout);
             document.getElementById("typingMessage").innerHTML = typingmessage;
-            setTimeout(() => { document.getElementById("typingMessage").innerHTML = ''; }, 5000);
+            typingTimeout = setTimeout(() => { document.getElementById("typingMessage").innerHTML = ''; }, 5000);
         });
 
-        socketio.on("newuser", (users) => {
+        socketio.on("newuser", (newusers) => {
             // console.log("new user, users:", users);
+            users = newusers;
+            console.log(users);
             var select = document.getElementById('userSelect');
             var list = document.getElementById("userList");
             select.innerHTML = '';
-            users.forEach(user => {
+            newusers.forEach(user => {
                 var userOption = '<option value="' + user.id + '">' + user.username + '</option>';
                 select.innerHTML += userOption;
             });
-            list.innerHTML = '<div class="list-group-item active" data-toggle="list" onclick="recipient = \'all\'; groupRecipient = false;">All Users</div>';
-            users.forEach(user => {
-                var userLink = '<div class="list-group-item" data-toggle="list" onclick="recipient = \'' + user.id + '\'; groupRecipient = false;">' + user.username + '</div>';
-                list.innerHTML += userLink;
-            })
+            updateUserList();
         });
 
-        socketio.on("newGroup", (groupName) => {
-            var list = document.getElementById("groupList");
-            var groupLink = '<div class="list-group-item" data-toggle="list" onclick="recipient = \'' + groupName + '\'; groupRecipient = true;">' + groupName + '</div>';
-            list.innerHTML += groupLink; 
+        socketio.on("newgroup", (groupName) => {
+            groups.push(groupName);
+            updateUserList();
         })
 
         socketio.on("authenticated", () => {
@@ -214,6 +249,8 @@
             document.getElementById("chatUI").style.display = "block";
             document.getElementById("messages").innerHTML +=
                 "You are successfully logged in! Can start chatting now.<br>";
+            document.getElementById('username').value = '';
+            password = document.getElementById('password').value = '';
         });
 
         socketio.on("registration", (result) => {
@@ -240,8 +277,6 @@
         socketio.on("loginfailed", () => {
             alert("Invalid username or password. Please try again.");
         });
-
-        
 
     </script>
 
@@ -345,7 +380,7 @@
                 
                 <!-- CREATE GROUP SCREEN -->
 
-                <form id="createGroup" style="display: none;" onsubmit="onGroupCreate(); hideGroupForm(); showMessageForm(); return false;">
+                <form id="createGroup" style="display: none;" onsubmit="createGroup(); hideGroupForm(); showMessageForm(); return false;">
                     <div class="form-group">
                         <label for="userSelect">Add Users to Group</label>
                         <select multiple id="userSelect" class="form-control" name="user">

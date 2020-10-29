@@ -41,6 +41,7 @@ socketio.on("connection", function (socketclient) {
             // socketio.sockets.emit("welcome", welcomemessage);
             socketio.emit("newuser", users);
             SendToAuthenticatedClient(socketclient, "welcome", welcomemessage);
+            console.log(users);
         } else {
             console.log("Debug>DataLayer.checklogin->result=false");
             socketclient.emit("loginfailed");
@@ -59,15 +60,21 @@ socketio.on("connection", function (socketclient) {
     });
 
     socketclient.on("logout", () => {
-        var logoutmessage = socketclient.username + " has disconnected from the chat";
+        users = users.filter(user => user.id !== socketclient.id);
         
-        users.filter(user => user.id !== socketclient.id);
-        users.splice(socketclient.username);
-
-        //socketclient.emit("userleft", logoutmessage);
+        var logoutmessage = {
+            message: socketclient.username + " has disconnected from the chat",
+            sender: 'all'
+        }
+        // emit a chat to send logout message
         socketio.sockets.emit("chat", logoutmessage);
+
+        // emit newuser to update active user list
+        socketio.sockets.emit("newuser", users);
+
         var logmsg = "Debug:> logged out";
-            console.log(logmsg);
+        console.log(logmsg);
+        
         socketclient.disconnect();
         // socketclient.id = null;
     });
@@ -80,6 +87,10 @@ socketio.on("connection", function (socketclient) {
             return;
         }
         var chatmessage = socketclient.username + " says: " + message;
+        var chatmessage = {
+            message: socketclient.username + " says: " + message,
+            sender: 'all'
+        }
         console.log(chatmessage);
         socketio.sockets.emit("chat", chatmessage);
     });
@@ -90,20 +101,32 @@ socketio.on("connection", function (socketclient) {
             return;
         }
         var receivingUser = users.find(user => user.id === message.socketId);
-        var chatmessage = "(PRIVATE) " + socketclient.username + " says: " + message.message;
-        var sentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
+        // var stringchatmessage = "(PRIVATE) " + socketclient.username + " says: " + message.message;
+        // var stringsentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
+        var chatmessage = {
+            message: "(PRIVATE) " + socketclient.username + " says: " + message.message,
+            sender: socketclient.id
+        }
+        var sentmessage = {
+            message: "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message,
+            sender: message.socketId
+        }
         console.log(chatmessage);
         socketio.to(message.socketId).emit("chat", chatmessage);
         socketio.to(socketclient.id).emit("chat", sentmessage);
     });
 
 
-    socketclient.on("groupChat", (message) => {
+    socketclient.on("groupchat", (message) => {
         if (!socketclient.authenticated) {
             console.log("Unauthenticated client sent a chat. Supress!");
             return;
         }
-        var chatmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
+        // var stringmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
+        var chatmessage = {
+            message: "(" + message.groupName + ") " + socketclient.username + " says: " + message.message,
+            sender: message.groupName
+        }
         console.log(chatmessage);
         socketio.to(message.groupName).emit("chat", chatmessage);
     })
@@ -113,12 +136,13 @@ socketio.on("connection", function (socketclient) {
         socketclient.broadcast.emit("typing", typingmessage);
     });
 
-    socketclient.on("createGroup", (groupName, selections) => {
+    socketclient.on("creategroup", (groupName, selections) => {
+        console.log("users being added to group:",selections);
         selections.forEach(element => {
             socketio.sockets.connected[element].join(groupName);
         }); 
         groups.push(groupName);
-        socketio.to(groupName).emit("newGroup", groupName);
+        socketio.to(groupName).emit("newgroup", groupName);
         console.log(groups);
     });
 });
