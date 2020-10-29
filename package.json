@@ -1,0 +1,17 @@
+{
+  "name": "cps490-project-team8",
+  "version": "1.0.0",
+  "description": "Source: <https://bitbucket.org/capstones-cs-udayton/cps490/src/master/README.md>",
+  "main": "src/ChatServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/ChatServer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/cps490f20-team8/cps490-project-team8.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/cps490f20-team8/cps490-project-team8#readme"
+}
