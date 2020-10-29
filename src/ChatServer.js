@@ -19,7 +19,7 @@ app.get('/', (request, response) => {
 var io = require('socket.io');
 var socketio = io.listen(server);
 console.log("Socket.IO is listening at port: " + port);
-socketio.on("connection", function (socketclient) {
+socketio.on("connection", (socketclient) => {
     console.log("A new Socket.IO client is connected. ID= " + socketclient.id);
 
     /* LOGIN/REGISTRATION EVENTS */
@@ -32,7 +32,7 @@ socketio.on("connection", function (socketclient) {
             users.push({
                 id: socketclient.id,
                 username: username
-            })
+            });
             socketclient.authenticated = true;
             socketclient.emit("authenticated");
             socketclient.username = username;
@@ -61,7 +61,7 @@ socketio.on("connection", function (socketclient) {
 
     socketclient.on("logout", () => {
         users = users.filter(user => user.id !== socketclient.id);
-        
+
         var logoutmessage = {
             message: socketclient.username + " has disconnected from the chat",
             sender: 'all'
@@ -74,7 +74,7 @@ socketio.on("connection", function (socketclient) {
 
         var logmsg = "Debug:> logged out";
         console.log(logmsg);
-        
+
         socketclient.disconnect();
         // socketclient.id = null;
     });
@@ -130,21 +130,38 @@ socketio.on("connection", function (socketclient) {
         console.log(chatmessage);
         socketio.to(message.groupName).emit("chat", chatmessage);
     })
-    
+
     socketclient.on("typing", () => {
         var typingmessage = socketclient.username + " is typing...";
         socketclient.broadcast.emit("typing", typingmessage);
     });
 
     socketclient.on("creategroup", (groupName, selections) => {
-        console.log("users being added to group:",selections);
+        console.log("users being added to group:", selections);
         selections.forEach(element => {
             socketio.sockets.connected[element].join(groupName);
-        }); 
+        });
         groups.push(groupName);
         socketio.to(groupName).emit("newgroup", groupName);
         console.log(groups);
     });
+});
+
+socketio.on('disconnect', (socketclient) => {
+    users = users.filter(user => user.id !== socketclient.id);
+
+    var logoutmessage = {
+        message: socketclient.username + " has disconnected from the chat",
+        sender: 'all'
+    }
+    // emit a chat to send logout message
+    socketio.sockets.emit("chat", logoutmessage);
+
+    // emit newuser to update active user list
+    socketio.sockets.emit("newuser", users);
+
+    var logmsg = "Debug:> logged out";
+    console.log(logmsg);
 });
 
 /* DATABASE FUNCTIONS */
