@@ -60,8 +60,14 @@ socketio.on("connection", function (socketclient) {
 
     socketclient.on("logout", () => {
         var logoutmessage = socketclient.username + " has disconnected from the chat";
+        
         users.filter(user => user.id !== socketclient.id);
-        socketclient.emit("userleft", logoutmessage, users);
+        users.splice(socketclient.username);
+
+        //socketclient.emit("userleft", logoutmessage);
+        socketio.sockets.emit("chat", logoutmessage);
+        var logmsg = "Debug:> logged out";
+            console.log(logmsg);
         socketclient.disconnect();
         // socketclient.id = null;
     });
