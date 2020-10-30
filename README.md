@@ -2,9 +2,6 @@
 
 Source: <https://bitbucket.org/capstones-cs-udayton/cps490/src/master/README.md>
 
-*NOTE*: _This is just a tentative template for your team to start working on sprint 0. It is a minimum requirement for your project final report and can be updated later.
-Your team can revise/add more sections, however, it is highly recommended to seek approval from the instructor for a pull request._
-
 University of Dayton
 
 Department of Computer Science
@@ -99,7 +96,7 @@ The messenger application is a live-chat application that communicates between t
 
 # Implementation
 ## Sprint 2
-* During this sprint, we were working on the smaller details for our messenger application.
+* During this sprint, we were working on finishing the major chunks of our messenger application.
 * We implemented further use cases to our app:
 1. Users need to login with username/password. Invalid username/password cannot be logged in
 2. Anyone can register for a new account to log in
@@ -111,14 +108,98 @@ The messenger application is a live-chat application that communicates between t
 8. Read receipts
 9. User typing notification
 * Similar to sprint 1, the implementations were deployed on Heroku, furthering our development of the ChatServer.js file in node and updating the home page in HTML.
-* The updates to ChatServer.js are in the code snippets below:
+* The new methods implemented in ChatServer.js are in the code snippets below:
 
 ```
-//ADD STUFF HERE!!!!!!
-```
-## Deployment
+socketclient.on("register", (username, password) => {
+    if (validateUsername(username) && validatePassword(password)) {
+        DataLayer.addUser(username, password, (result) => {
+            socketclient.emit("registration", result);
+        });
+    } else {
+        var result = "invalid login"
+        socketclient.emit("registration", result);
+    }
+});
 
-* Our team deployed our application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code, and have the ability to create a dynamic web application.
+socketclient.on("logout", () => {
+    users = users.filter(user => user.id !== socketclient.id);
+
+    var logoutmessage = {
+        message: socketclient.username + " has disconnected from the chat",
+        sender: 'all'
+    }
+    // emit a chat to send logout message
+    socketio.sockets.emit("chat", logoutmessage);
+
+    // emit newuser to update active user list
+    socketio.sockets.emit("newuser", users);
+
+    var logmsg = "Debug:> logged out";
+    console.log(logmsg);
+
+    socketclient.disconnect();
+    // socketclient.id = null;
+});
+
+socketclient.on("groupchat", (message) => {
+    if (!socketclient.authenticated) {
+        console.log("Unauthenticated client sent a chat. Supress!");
+        return;
+    }
+    // var stringmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
+    var chatmessage = {
+        message: "(" + message.groupName + ") " + socketclient.username + " says: " + message.message,
+        sender: message.groupName
+    }
+    console.log(chatmessage);
+    socketio.to(message.groupName).emit("chat", chatmessage);
+})
+
+socketclient.on("typing", () => {
+    var typingmessage = socketclient.username + " is typing...";
+    socketclient.broadcast.emit("typing", typingmessage);
+});
+
+socketclient.on("creategroup", (groupName, selections) => {
+    console.log("users being added to group:", selections);
+    selections.forEach(element => {
+        socketio.sockets.connected[element].join(groupName);
+    });
+    groups.push(groupName);
+    socketio.to(groupName).emit("newgroup", groupName);
+    console.log(groups);
+});
+});
+
+socketio.on('disconnect', (socketclient) => {
+    users = users.filter(user => user.id !== socketclient.id);
+
+    var logoutmessage = {
+        message: socketclient.username + " has disconnected from the chat",
+        sender: 'all'
+    }
+    // emit a chat to send logout message
+    socketio.sockets.emit("chat", logoutmessage);
+
+    // emit newuser to update active user list
+    socketio.sockets.emit("newuser", users);
+
+    var logmsg = "Debug:> logged out";
+    console.log(logmsg);
+});
+
+function validateUsername(username) {
+    return (username && username.length > 4);
+}
+
+function validatePassword(password) {
+    //require at least one digit, one upper and lower case letter
+    return /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(password);
+}
+
+
+```
 
 ## Sprint 1
 
@@ -224,26 +305,31 @@ Duration: 09-11-2020 to 10-01-2020
 
 ### Sprint 2
 #### Completed Tasks:
-1. 
+1. User typing notifications
+2. View list of active users
+3. Logout functionality
+4. Database implementation
+5. User registration
+6. Group chat implementation
 
-Duration: 
-
+Duration: 10-02-2020 to 10-29-2020
 
 #### Contributions: 
 
-1.  Jacob Scheetz, 8 hours, contributed in README, class code updates, powerpoint slides 
-2.  Beth Hosek 2, 8 hours, contributed in README, class code updates, powerpoint slides 
-3.  Justen Stall, 8 hours, contributed in README, class code updates, powerpoint slides 
-4.  Dena Schaeffer, 8 hours, contributed in README, class code updates, powerpoint slides 
+1.  Jacob Scheetz, 8 hours, contributed in README, login and register, powerpoint slides 
+2.  Beth Hosek 2, 8 hours, contributed in README, logout and use case diagrams, powerpoint slides 
+3.  Justen Stall, 8 hours, contributed in README, authentication and separated chat windows, powerpoint slides 
+4.  Dena Schaeffer, 8 hours, contributed in README, group messaging and use case diagrams, powerpoint slides 
 
 #### Sprint Retrospective:
 ### Sprint 2: ###
-```
-ADD STUFF HERE
-```
+* There were no major issues with the code
+* The regular meetings helped us with time management
+* Dividing the tasks among members helped improve efficiency
+
 | Good     |   Could have been better    |  How to improve?  |
 |----------|:---------------------------:|------------------:|
-|   x      |                             |                   |
+|   No issues with the code      |    Deployment to Heroku resulted in bugs      |   Work on bug fixes throughout           |
 
 ### Sprint 1: ###
 * We felt that working on the information on a regular basis as it was being discussed in class helped improve our understnafding of what we were developing
@@ -252,30 +338,54 @@ ADD STUFF HERE
 
 | Good     |   Could have been better    |  How to improve?  |
 |----------|:---------------------------:|------------------:|
-|   x      |                             |                   |
+|   Great teamwork   |  We could have gone to office hours more   |     We can add more use cases to improve UX  |
 
 
 # User guide/Demo
 
 Write as a demo with screenshots and as a guide for users to use your system.
 
-* users can toggle between light mode: 
+* Users can toggle between light mode: 
+
 ![light](lightmode.png)
-* or dark mode:
+* Or dark mode:
+
 ![dark](darkmode.png)
 
-* users can logon to the system with their username and password:
+* Users can register to the system:
+
+![register](register.png)
+
+* Users can logon to the system with their username and password:
+
 ![login](userlogin.png)
 
 * Once logged in, the users can send messages in the chat and see who joins the chat:
-![chat](public-chat.png)
 
-* users can send a private chat via the drop down menu interface of active users:
-![private-send](private-chat.png)
+![chat](userlist.png)
 
-* users can receive a private chat: 
-![receive-private](receiving-private-chat.png)
+* Users can see when someone is typing:
 
-* users private messages are not seen by others that are not recipients in the same chat: 
-![private](others-cant-see-private-chat.png)
+![chat](typing.png)
+
+* Users can send a private chat via the selection of an active user:
+
+![private-send](private.png)
+
+* Users can receive a private chat: 
+
+![receive-private](privatefrom.png)
+
+* Users private messages are not seen by others that are not recipients in the same chat: 
+
+![private](noprivate.png)
+
+* Users can create a group chat:
+
+![chat](group1.png)
+![chat](group2.png)
+
+* Users can logout (brings user back to login screen and notifies active users): 
+
+![chat](logout.png)
 
