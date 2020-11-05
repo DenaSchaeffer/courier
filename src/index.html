@@ -46,7 +46,7 @@
             var password = document.getElementById('newpassword').value;
 
             socketio.on("welcome", (welcomemessage) => {
-                document.getElementById('messages').innerHTML += welcomemessage + "<br>";
+                document.getElementById('messages').innerHTML += sanitizeHTML(welcomemessage) + "<br>";
             });
 
             socketio.emit("register", username, password);
@@ -98,7 +98,7 @@
             var messageWindow = document.getElementById('messages');
             messageWindow.innerHTML = '';
             selectedMessages.forEach(message => {
-                messageWindow.innerHTML += message.message + "<br>";
+                messageWindow.innerHTML += sanitizeHTML(message.message) + "<br>";
             });
         }
 
@@ -249,7 +249,7 @@
             select.innerHTML = '';
             newusers.forEach(user => {
                 var userOption = '<option value="' + user.id + '">' + user.username + '</option>';
-                select.innerHTML += userOption;
+                select.innerHTML += sanitizeHTML(userOption);
             });
             updateUserList();
         });
