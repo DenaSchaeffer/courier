@@ -42,6 +42,14 @@ socketio.on("connection", (socketclient) => {
             socketio.emit("newuser", users);
             SendToAuthenticatedClient(socketclient, "welcome", welcomemessage);
             console.log(users);
+
+            //load chat history
+            var chat_history = await messengerdb.loadChatHistory(username);
+            if(chat_history && chat_history.length > 0){
+                chat_history = chat_history.reverse();
+                //reverse the order as we get the latest first
+                socketclient.emit("chat_history", chat_history);
+            }
         } else {
             console.log("Debug>DataLayer.checklogin->result=false");
             socketclient.emit("loginfailed");
@@ -187,6 +195,8 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
             socketclient.emit(type, data);
             var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
             console.log(logmsg);
+            if(type=="chat")
+                messengerdb.storePublicChat(socketclient.username, data);
         }
     }
 }

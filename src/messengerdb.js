@@ -50,4 +50,25 @@ const addUser = (username, password, callback) => {
         }
     });
 }
-module.exports = { checklogin, addUser }
+const storePublicChat = (receiver, message)=>
+{
+    //TODO: validate the data and print out debug info
+    let timestamp =  Date.now();
+    let chat = {receiver: receiver, message:message, timestamp:timestamp};
+    getDb().collection("public_chat").insertOne(chat, function(err,doc){
+        if(err != null){
+            console.log(err);
+        }else{
+            console.log("Debug: message is added:" + JSON.stringify(doc.ops));
+        }
+    })
+
+}
+const loadChatHistory = async (receiver, limits=100)=>
+{
+    var chat_history = await getDb.collection("public_chat").find({receiver:receiver}).sort({timestamp:-1}).limit(limits).toArray();
+    //print debug info ex. using JSON.stringify(chat_history)
+    if (chat_history && chat_history.length > 0) 
+        return chat_history;
+}
+module.exports = { checklogin, addUser,storePublicChat, loadChatHistory }
