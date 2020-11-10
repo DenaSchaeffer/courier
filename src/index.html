@@ -19,7 +19,7 @@
         var recipient = 'all';
         var groupRecipient = false;
         var groups = [];
-        var messages = []; 
+        var messages = [];
         var users = [];
         var typingTimeout;
 
@@ -46,7 +46,7 @@
             var password = document.getElementById('newpassword').value;
 
             socketio.on("welcome", (welcomemessage) => {
-                document.getElementById('messages').innerHTML += welcomemessage + "<br>";
+                document.getElementById('messages').innerHTML += sanitizeHTML(welcomemessage) + "<br>";
             });
 
             socketio.emit("register", username, password);
@@ -98,7 +98,7 @@
             var messageWindow = document.getElementById('messages');
             messageWindow.innerHTML = '';
             selectedMessages.forEach(message => {
-                messageWindow.innerHTML += message.message + "<br>";
+                messageWindow.innerHTML += sanitizeHTML(message.message) + "<br>";
             });
         }
 
@@ -125,7 +125,7 @@
             selectedUser.classList.add('active');
         }
 
-        
+
         function selectRecipient(newRecipient) {
             recipient = newRecipient;
             displayMessages();
@@ -211,6 +211,20 @@
             groupForm.style.display = 'block';
         }
 
+        //https://gomakethings.com/preventing-cross-site-scripting-attacks-when-using-innerhtml-in-vanilla-javascript/
+        /*!
+        * Sanitize and encode all HTML in a user-submitted string
+        * (c) 2018 Chris Ferdinandi, MIT License, https://gomakethings.com
+        * @param  {String} str  The user-submitted string
+        * @return {String} str  The sanitized string
+        */
+        var sanitizeHTML = function (str) {
+            var temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML;
+        };
+
+
         /* SOCKET.IO EVENT HANDLING */
 
         socketio.on("chat", (chatmessage) => {
@@ -235,7 +249,7 @@
             select.innerHTML = '';
             newusers.forEach(user => {
                 var userOption = '<option value="' + user.id + '">' + user.username + '</option>';
-                select.innerHTML += userOption;
+                select.innerHTML += sanitizeHTML(userOption);
             });
             updateUserList();
         });
@@ -290,6 +304,9 @@
                 }
             }
         } )
+        // socketio.on("disconnect", () => {
+        //     socketio.emit("logout");
+        // })
 
     </script>
 
@@ -359,7 +376,8 @@
             <div class="col-3">
                 <button class="btn btn-primary mb-3" onclick="hideMessageForm(); showGroupForm();">New Group</button>
                 <div class="list-group" id="userList">
-                    <div class="list-group-item active" data-toggle="list" onclick="recipient = 'all'; groupRecipient = false;">All Users</div>
+                    <div class="list-group-item active" data-toggle="list"
+                        onclick="recipient = 'all'; groupRecipient = false;">All Users</div>
                 </div>
                 <div class="list-group" id="groupList">
                 </div>
@@ -370,12 +388,12 @@
             <!-- MAIN AREA -->
 
             <div class="col-9">
-                
+
                 <!-- MESSAGE SCREEN -->
-                
+
                 <div id="messageForm">
                     <form onsubmit="sendmessage(); return false;">
-                    <!-- <form> -->
+                        <!-- <form> -->
                         <div class="form-group">
                             <label>Your message:</label>
                             <div class="input-group">
@@ -390,10 +408,11 @@
                     </form>
                     <div id="messages"></div>
                 </div>
-                
+
                 <!-- CREATE GROUP SCREEN -->
 
-                <form id="createGroup" style="display: none;" onsubmit="createGroup(); hideGroupForm(); showMessageForm(); return false;">
+                <form id="createGroup" style="display: none;"
+                    onsubmit="createGroup(); hideGroupForm(); showMessageForm(); return false;">
                     <div class="form-group">
                         <label for="userSelect">Add Users to Group</label>
                         <select multiple id="userSelect" class="form-control" name="user">
@@ -401,14 +420,13 @@
                         </select>
                     </div>
                     <div class="form-group">
-                    <div class="form-group">
-                        <label for="groupName">Enter Group Name</label>
-                        <input type="text" id="groupName"
-                                    placeholder="Enter Group Name ..." class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-success" type="submit">Create Group</button>
-                    </div>
+                        <div class="form-group">
+                            <label for="groupName">Enter Group Name</label>
+                            <input type="text" id="groupName" placeholder="Enter Group Name ..." class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" type="submit">Create Group</button>
+                        </div>
                 </form>
             </div>
         </div>
