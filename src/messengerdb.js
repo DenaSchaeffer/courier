@@ -50,11 +50,14 @@ const addUser = (username, password, callback) => {
         }
     });
 }
-const storePublicChat = (receiver, message) => {
+const storePublicChat = (message) => {
     //TODO: validate the data and print out debug info
-    let timestamp =  Date.now();
-    let chat = { receiver: receiver, message: message , timestamp: timestamp };
-    getDb().collection("public_chat").insertOne(chat, function(err,doc){
+    
+    // Implementation from Phu's lecture code
+    // let timestamp =  Date.now();
+    // let chat = { receiver: receiver, message: message , timestamp: timestamp };
+    // // getDb().collection("public_chat").insertOne(chat, function(err,doc){
+    getDb().collection("public_chat").insertOne(message, function(err,doc){
         if (err != null) {
             console.log(err);
         } else {

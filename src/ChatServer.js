@@ -95,9 +95,12 @@ socketio.on("connection", (socketclient) => {
             return;
         }
         var chatmessage = socketclient.username + " says: " + message;
+        var timestamp = Date.now();
         var chatmessage = {
             message: socketclient.username + " says: " + message,
-            sender: 'all'
+            sender: socketclient.username,
+            receiver: 'all',
+            timestamp: timestamp
         }
         console.log(chatmessage);
         // socketio.sockets.emit("chat", chatmessage);
@@ -112,13 +115,18 @@ socketio.on("connection", (socketclient) => {
         var receivingUser = users.find(user => user.id === message.socketId);
         // var stringchatmessage = "(PRIVATE) " + socketclient.username + " says: " + message.message;
         // var stringsentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
+        var timestamp = Date.now();
         var chatmessage = {
             message: "(PRIVATE) " + socketclient.username + " says: " + message.message,
-            sender: socketclient.id
+            sender: socketclient.username,
+            receiver: socketclient.id,
+            timestamp: timestamp
         }
         var sentmessage = {
             message: "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message,
-            sender: message.socketId
+            sender: receivingUser.username,
+            receiver: message.socketId,
+            timestamp: timestamp
         }
         console.log(chatmessage);
         socketio.to(message.socketId).emit("chat", chatmessage);
@@ -202,7 +210,7 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
             var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
             console.log(logmsg);
             if(type=="chat")
-                messengerdb.storePublicChat(socketclient.username, data);
+                messengerdb.storePublicChat(data);
         }
     }
 }
