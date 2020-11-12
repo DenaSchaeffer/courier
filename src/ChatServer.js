@@ -100,7 +100,8 @@ socketio.on("connection", (socketclient) => {
             sender: 'all'
         }
         console.log(chatmessage);
-        socketio.sockets.emit("chat", chatmessage);
+        // socketio.sockets.emit("chat", chatmessage);
+        SendToAuthenticatedClient(socketclient, "chat", chatmessage);
     });
 
     socketclient.on("privatechat", (message) => {
