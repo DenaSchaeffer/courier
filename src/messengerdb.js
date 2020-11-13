@@ -66,6 +66,7 @@ const storePublicChat = (message) => {
     });
 }
 const loadChatHistory = async (receiver, limits=100) => {
+    //TODO: fix the find so that it can get by receiver and by all
     var chat_history = await getDb().collection("public_chat").find({receiver:receiver}).sort({timestamp:-1}).limit(limits).toArray();
     //print debug info ex. using JSON.stringify(chat_history)
     if (chat_history && chat_history.length > 0) 
