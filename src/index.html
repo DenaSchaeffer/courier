@@ -299,11 +299,7 @@
 
         socketio.on("chat_history", (chat_history) => {
             //debug if needed
-            for (x in chat_history)
-            {
-                messages.push();
-            }
-            messages.concat(chat_history);
+            messages = messages.concat(chat_history);
             console.log('chat_history:', chat_history);
             console.log('messages:', messages);
             displayMessages();
