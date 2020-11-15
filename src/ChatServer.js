@@ -129,8 +129,8 @@ socketio.on("connection", (socketclient) => {
             timestamp: timestamp
         }
         console.log(chatmessage);
-        socketio.to(message.socketId).emit("chat", chatmessage);
-        socketio.to(socketclient.id).emit("chat", sentmessage);
+        SendToAuthenticatedClient(message.socketId, "chat", chatmessage);
+        SendToAuthenticatedClient(socketclient.id, "chat", sentmessage);
     });
 
 

@@ -68,8 +68,10 @@ const storePublicChat = (message) => {
 const loadChatHistory = async (receiver, limits=100) => {
     //TODO: fix the find so that it can get by receiver and by all
     var chat_history = await getDb().collection("public_chat").find({receiver:receiver}).sort({timestamp:-1}).limit(limits).toArray();
+    var chat_history2 = await getDb().collection("public_chat").find({receiver:"all"}).sort({timestamp:-1}).limit(limits).toArray();
+    var appended_history = chat_history.concat(chat_history2);
     //print debug info ex. using JSON.stringify(chat_history)
-    if (chat_history && chat_history.length > 0) 
-        return chat_history;
+    if (appended_history && appended_history.length > 0) 
+        return appended_history;
 }
 module.exports = { checklogin, addUser,storePublicChat, loadChatHistory }
