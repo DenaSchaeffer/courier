@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Messenger 0.2</title>
+    <title>Messenger 0.3</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -16,6 +16,7 @@
         var socketio = io();
 
         /* GLOBAL VARIABLES */
+        var myUsername = null;
         var recipient = 'all';
         var groupRecipient = false;
         var groups = [];
@@ -73,12 +74,16 @@
                     groupName: recipient
                 });
             } else {
+                console.log(recipient)
+                var receivingUser = users.find(user => user.username === recipient);
+                console.log(receivingUser)
                 console.log('sending private chat');
                 socketio.emit("privatechat", {
                     message: document.getElementById('yourmessage').value,
-                    socketId: recipient
+                    socketId: receivingUser.id,
+                    receiver: recipient
                 });
-                console.log('private chat emitted');
+                // console.log('private chat emitted');
             }
         }
 
@@ -97,7 +102,13 @@
         }
 
         function displayMessages() {
-            var selectedMessages = messages.filter(message => message.receiver === recipient);
+            if(recipient === 'all') {
+                var selectedMessages = messages.filter(message => message.receiver === 'all');
+            } else {
+                var selectedMessages = messages.filter(message => 
+                                                        (message.sender === recipient && message.receiver === myUsername) || 
+                                                        (message.receiver === recipient && message.sender === myUsername));
+            }
             var messageWindow = document.getElementById('messages');
             messageWindow.innerHTML = '';
             selectedMessages.forEach(message => { 
@@ -119,7 +130,8 @@
 
             // Create user options (value = socketid)
             users.forEach(user => {
-                var userLink = '<div id="' + user.id + '" class="list-group-item" data-toggle="list" onclick="selectRecipient(\'' + user.id + '\'); groupRecipient = false;">' + user.username + '</div>';
+                var userLink = '<div id="' + user.username + '" class="list-group-item" data-toggle="list" onclick="selectRecipient(\'' + user.username + '\'); groupRecipient = false;">' + user.username + '</div>';
+                // var userLink = '<div id="' + user.id + '" class="list-group-item" data-toggle="list" onclick="selectRecipient(\'' + user.id + '\'); groupRecipient = false;">' + user.username + '</div>';
                 list.innerHTML += userLink;
             });
 
@@ -252,7 +264,7 @@
             var list = document.getElementById("userList");
             select.innerHTML = '';
             newusers.forEach(user => {
-                var userOption = '<option value="' + user.id + '">' + user.username + '</option>';
+                var userOption = '<option value="' + user.username + '">' + user.username + '</option>';
                 select.innerHTML += sanitizeHTML(userOption);
             });
             updateUserList();
@@ -263,7 +275,8 @@
             updateUserList();
         })
 
-        socketio.on("authenticated", () => {
+        socketio.on("authenticated", (username) => {
+            myUsername = username;
             document.getElementById("loginUI").style.display = "none";
             document.getElementById("chatUI").style.display = "block";
             document.getElementById("messages").innerHTML +=
@@ -300,7 +313,7 @@
         socketio.on("chat_history", (chat_history) => {
             //debug if needed
             messages = messages.concat(chat_history);
-            console.log('chat_history:', chat_history);
+            // console.log('chat_history:', chat_history);
             console.log('messages:', messages);
             displayMessages();
             // if(chat_history && chat_history.length >0){
@@ -321,7 +334,7 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand pl-3" href="#">Messenger 0.2</a>
+        <a class="navbar-brand pl-3" href="#">Messenger 0.3</a>
         <span class="flex-grow-1"></span>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">

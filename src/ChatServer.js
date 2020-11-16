@@ -34,7 +34,7 @@ socketio.on("connection", (socketclient) => {
                 username: username
             });
             socketclient.authenticated = true;
-            socketclient.emit("authenticated");
+            socketclient.emit("authenticated", username);
             socketclient.username = username;
             var welcomemessage = username + " has joined the chat system!";
             console.log(welcomemessage);
@@ -119,16 +119,18 @@ socketio.on("connection", (socketclient) => {
         var chatmessage = {
             message: "(PRIVATE) " + socketclient.username + " says: " + message.message,
             sender: socketclient.username,
-            receiver: socketclient.id,
+            receiver: receivingUser.username,
             timestamp: timestamp
         }
         var sentmessage = {
             message: "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message,
-            sender: receivingUser.username,
-            receiver: message.socketId,
+            sender: socketclient.username,
+            receiver: receivingUser.username,
             timestamp: timestamp
         }
         console.log(chatmessage);
+        // SendToAuthenticatedClient(receivingUser.username.id, "chat", chatmessage);
+        // SendToAuthenticatedClient(socketclient.id, "chat", sentmessage);
         SendToAuthenticatedClient(message.socketId, "chat", chatmessage);
         SendToAuthenticatedClient(socketclient.id, "chat", sentmessage);
     });
