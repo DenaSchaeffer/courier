@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <title>Messenger 0.3</title>
 
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-
 </head>
 
 <body style="height: 100vh;">
@@ -23,6 +23,21 @@
         var messages = [];
         var users = [];
         var typingTimeout;
+
+        const months = [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'June',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec'
+        ]
 
         /* LOGIN/REGISTRATION FUNCTIONS */
 
@@ -101,18 +116,56 @@
             socketio.emit("typing")
         }
 
+        function createMessage(message) {
+            let time = new Date(message.timestamp);
+            let timestamp = `${time.getHours()}:${time.getMinutes()} ${months[time.getMonth()]} ${time.getDate()}, ${time.getFullYear()}`
+            if (message.sender === myUsername) {
+                messageElement = `
+                    <div class="sent-message d-flex flex-row w-100">
+                        <div class="spacer"></div>
+                        <div class="sent-message-text bg-primary">
+                            ${sanitizeHTML(message.message)}
+                        </div>
+                        <div class="timestamp">
+                            ${timestamp}
+                        </div>
+                    </div>
+                `
+            } else if (message.sender === 'none' || message.sender === 'all') {
+                messageElement = `<p class="notice">${message.message}</p>`
+            } else {
+                messageElement = `
+                    <div class="message d-flex flex-row w-100">
+                        <div class="sender">
+                            ${sanitizeHTML(message.sender)}
+                        </div>
+                        <div class="message-text bg-light">
+                            ${sanitizeHTML(message.message)}
+                        </div>
+                        <div class="spacer"></div>
+                        <div class="timestamp">
+                            ${timestamp}
+                        </div>
+                    </div>`
+            }
+            return messageElement;
+        }
+
         function displayMessages() {
-            if(recipient === 'all') {
+            if (recipient === 'all') {
                 var selectedMessages = messages.filter(message => message.receiver === 'all');
             } else {
-                var selectedMessages = messages.filter(message => 
-                                                        (message.sender === recipient && message.receiver === myUsername) || 
-                                                        (message.receiver === recipient && message.sender === myUsername));
+                var selectedMessages = messages.filter(message =>
+                    (message.sender === recipient && message.receiver === myUsername) ||
+                    (message.receiver === recipient && message.sender === myUsername));
             }
             var messageWindow = document.getElementById('messages');
+
+            // TODO: uncomment
             messageWindow.innerHTML = '';
-            selectedMessages.forEach(message => { 
-                messageWindow.innerHTML += sanitizeHTML(message.message) + "<br>";
+            selectedMessages.forEach(message => {
+                let time = new Date(message.timestamp);
+                messageWindow.innerHTML += createMessage(message);
             });
         }
 
@@ -153,6 +206,7 @@
             var button = document.getElementById('dark-mode');
             var navbar = document.getElementById('navbar');
             var userList = document.getElementById("userList");
+            var messages = document.querySelectorAll(".message-text");
 
             if (body.style.backgroundColor === "black") {
                 body.style.backgroundColor = "white";
@@ -162,6 +216,10 @@
                 navbar.classList.add('bg-light');
                 navbar.classList.add('navbar-light');
                 userList.style.color = 'rgb(33, 37, 41)';
+                messages.forEach(message => {
+                    message.classList.add('bg-light');
+                    message.classList.remove('bg-dark');
+                });
                 button.innerHTML = "Dark Mode";
             } else {
                 body.style.backgroundColor = "black";
@@ -171,7 +229,20 @@
                 navbar.classList.add('bg-dark');
                 navbar.classList.add('navbar-dark');
                 userList.style.color = 'rgb(33, 37, 41)';
+                messages.forEach(message => {
+                    message.classList.remove('bg-light');
+                    message.classList.add('bg-dark');
+                });
                 button.innerHTML = "Light Mode"
+            }
+        }
+
+        function toggleStrobeMode() {
+            for(i=0; i<5000; i++) {
+                toggleDarkMode();
+                let strobeTimeout = setTimeout(() => {
+                    toggleDarkMode();
+                 }, 800);
             }
         }
 
@@ -339,8 +410,8 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         </div>
-        <button type="button" id="dark-mode" class="btn btn-light" onclick="toggleDarkMode()">Dark
-            Mode</button>
+        <button type="button" id="dark-mode" class="btn btn-light" onclick="toggleDarkMode()">Dark Mode</button>
+        <button type="button" id="strobe-mode" class="btn btn-light ml-3" onclick="toggleStrobeMode()">Strobe Mode</button>
     </nav>
     <!-- <h1 id="title" class="pt-3 pl-3">Messenger 0.2</h1> -->
 
@@ -408,11 +479,12 @@
 
                 <!-- MESSAGE SCREEN -->
 
-                <div id="messageForm">
-                    <form onsubmit="sendmessage(); return false;">
-                        <!-- <form> -->
+                <div id="messages" class="w-100"></div>
+                <div id="messageForm" class="col-12">
+                    <p id="typingMessage"></p>
+                    <form onsubmit="sendmessage(); return false;" class="col-9">
                         <div class="form-group">
-                            <label>Your message:</label>
+                            <!-- <label>Your message:</label> -->
                             <div class="input-group">
                                 <input type="text" oninput="typing()" id="yourmessage"
                                     placeholder="Enter your message ..." class="form-control">
@@ -421,9 +493,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p id="typingMessage"></p>
                     </form>
-                    <div id="messages"></div>
                 </div>
 
                 <!-- CREATE GROUP SCREEN -->

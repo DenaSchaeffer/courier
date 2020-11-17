@@ -4,7 +4,7 @@
   "description": "Messenger Node.js App for CPS490 - Team 8",
   "main": "ChatServer.js",
   "scripts": {
-    "test": "nodemon src/ChatServer.js -e .html",
+    "test": "nodemon src/ChatServer.js -e html,css",
     "start": "node src/ChatServer.js"
   },
   "repository": {

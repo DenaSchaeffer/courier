@@ -1,5 +1,6 @@
 var http = require('http')
-var app = require('express')()
+const express = require('express');
+var app = express();
 var server = http.createServer(app)
 const port = process.env.PORT || 8080
 
@@ -15,6 +16,7 @@ app.get('/', (request, response) => {
     response.sendFile(__dirname + '/index.html')
 });
 
+app.use(express.static('src'));
 
 var io = require('socket.io');
 var socketio = io.listen(server);
@@ -94,10 +96,10 @@ socketio.on("connection", (socketclient) => {
             console.log("Unauthenticated client sent a chat. Supress!");
             return;
         }
-        var chatmessage = socketclient.username + " says: " + message;
+        var chatmessage = message;
         var timestamp = Date.now();
         var chatmessage = {
-            message: socketclient.username + " says: " + message,
+            message: message,
             sender: socketclient.username,
             receiver: 'all',
             timestamp: timestamp
@@ -117,13 +119,13 @@ socketio.on("connection", (socketclient) => {
         // var stringsentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
         var timestamp = Date.now();
         var chatmessage = {
-            message: "(PRIVATE) " + socketclient.username + " says: " + message.message,
+            message: message.message,
             sender: socketclient.username,
             receiver: receivingUser.username,
             timestamp: timestamp
         }
         var sentmessage = {
-            message: "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message,
+            message: message.message,
             sender: socketclient.username,
             receiver: receivingUser.username,
             timestamp: timestamp
