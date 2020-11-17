@@ -3,6 +3,7 @@ const express = require('express');
 var app = express();
 var server = http.createServer(app)
 const port = process.env.PORT || 8080
+var xssfilter = require("xss");
 
 server.listen(port);
 console.log(`Express HTTP Server is listening on port ${port}`)
@@ -36,7 +37,7 @@ socketio.on("connection", (socketclient) => {
                 username: username
             });
             socketclient.authenticated = true;
-            socketclient.emit("authenticated", username);
+            socketclient.emit("authenticated");
             socketclient.username = username;
             var welcomemessage = username + " has joined the chat system!";
             console.log(welcomemessage);
@@ -50,7 +51,8 @@ socketio.on("connection", (socketclient) => {
             if(chat_history && chat_history.length > 0){
                 chat_history = chat_history.reverse();
                 //reverse the order as we get the latest first
-                socketclient.emit("chat_history", chat_history);
+                var data = xssfilter(chat_history);
+                socketclient.emit("chat_history", data);
             }
         } else {
             console.log("Debug>DataLayer.checklogin->result=false");
@@ -61,11 +63,13 @@ socketio.on("connection", (socketclient) => {
     socketclient.on("register", (username, password) => {
         if (validateUsername(username) && validatePassword(password)) {
             DataLayer.addUser(username, password, (result) => {
-                socketclient.emit("registration", result);
+                var data = xssfilter(result);
+                socketclient.emit("registration", data);
             });
         } else {
             var result = "invalid login"
-            socketclient.emit("registration", result);
+            var data = xssfilter(result);
+            socketclient.emit("registration", data);
         }
     });
 
@@ -121,7 +125,7 @@ socketio.on("connection", (socketclient) => {
         var chatmessage = {
             message: message.message,
             sender: socketclient.username,
-            receiver: receivingUser.username,
+            receiver: socketclient.id,
             timestamp: timestamp
         }
         var sentmessage = {
@@ -131,10 +135,8 @@ socketio.on("connection", (socketclient) => {
             timestamp: timestamp
         }
         console.log(chatmessage);
-        // SendToAuthenticatedClient(receivingUser.username.id, "chat", chatmessage);
-        // SendToAuthenticatedClient(socketclient.id, "chat", sentmessage);
-        SendToAuthenticatedClient(message.socketId, "chat", chatmessage);
-        SendToAuthenticatedClient(socketclient.id, "chat", sentmessage);
+        socketio.to(message.socketId).emit("chat", chatmessage);
+        socketio.to(socketclient.id).emit("chat", sentmessage);
     });
 
 
@@ -210,7 +212,8 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
     for (var socketId in sockets) {
         var socketclient = sockets[socketId];
         if (socketclient.authenticated) {
-            socketclient.emit(type, data);
+            var d = xssfilter(data);
+            socketclient.emit(type, d);
             var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
             console.log(logmsg);
             if(type=="chat")
