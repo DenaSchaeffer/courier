@@ -215,7 +215,7 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
             for (let property in data) {
                 property = xssfilter(property);
             }
-            socketclient.emit(type, d);
+            socketclient.emit(type, data);
             var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
             console.log(logmsg);
             if(type=="chat")
