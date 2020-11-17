@@ -212,7 +212,9 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
     for (var socketId in sockets) {
         var socketclient = sockets[socketId];
         if (socketclient.authenticated) {
-            var d = xssfilter(data);
+            for (let property in data) {
+                property = xssfilter(property);
+            }
             socketclient.emit(type, d);
             var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
             console.log(logmsg);
