@@ -37,7 +37,7 @@ socketio.on("connection", (socketclient) => {
                 username: username
             });
             socketclient.authenticated = true;
-            socketclient.emit("authenticated");
+            socketclient.emit("authenticated", username);
             socketclient.username = username;
             var welcomemessage = username + " has joined the chat system!";
             console.log(welcomemessage);
@@ -51,8 +51,9 @@ socketio.on("connection", (socketclient) => {
             if(chat_history && chat_history.length > 0){
                 chat_history = chat_history.reverse();
                 //reverse the order as we get the latest first
-                var data = xssfilter(chat_history);
-                socketclient.emit("chat_history", data);
+                // var data = xssfilter(chat_history);
+                // socketclient.emit("chat_history", data);
+                socketclient.emit("chat_history", chat_history);
             }
         } else {
             console.log("Debug>DataLayer.checklogin->result=false");
@@ -212,8 +213,16 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
     for (var socketId in sockets) {
         var socketclient = sockets[socketId];
         if (socketclient.authenticated) {
-            for (let property in data) {
-                property = xssfilter(property);
+            if (typeof data === 'object' && data !== null) {
+                for (let property in data) {
+                    console.log('property:', data[property]);
+                    data[property] = xssfilter(data[property]);
+                    console.log('xss filtered:', data[property]);
+                }
+                data['timestamp'] = parseFloat(data['timestamp']);
+                console.log('new object:', data);
+            } else if (typeof data === 'string') {
+                data = xssfilter(data);
             }
             socketclient.emit(type, data);
             var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;

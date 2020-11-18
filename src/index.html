@@ -117,7 +117,9 @@
         }
 
         function createMessage(message) {
+            console.log('sender:',message.sender,'\tmy username:', myUsername);
             let time = new Date(message.timestamp);
+            console.log(message.timestamp);
             let timestamp = `${time.getHours()}:${time.getMinutes()} ${months[time.getMonth()]} ${time.getDate()}, ${time.getFullYear()}`
             if (message.sender === myUsername) {
                 messageElement = `
@@ -163,6 +165,7 @@
 
             // TODO: uncomment
             messageWindow.innerHTML = '';
+            console.log('Displayed messages:', selectedMessages)
             selectedMessages.forEach(message => {
                 let time = new Date(message.timestamp);
                 messageWindow.innerHTML += createMessage(message);
@@ -521,8 +524,8 @@
 
     <!-- FOOTER -->
 
-    <p id="subtitle" class="lead pl-3 fixed-bottom">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob
-        Scheetz in CPS490</p>
+    <!-- <p id="subtitle" class="lead pl-3 fixed-bottom">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob
+        Scheetz in CPS490</p> -->
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
