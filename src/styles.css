@@ -1,6 +1,24 @@
+#navbar {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 100;
+}
+
+body {
+	padding-top: 56px;
+	box-sizing: border-box;
+}
+
 #chatUI {
 	height: 100%;
 	width: 100%;
+}
+
+#sidebar {
+	position: relative;
+	top: 0px;
+	box-sizing: border-box;
 }
 
 #messageForm {
@@ -8,12 +26,16 @@
 	position: fixed;
 	bottom: 0;
 	width: 100%;
+	box-sizing: border-box;
+
 }
 
 #messages {
 	overflow-y: scroll;
 	height: 100%;
 	position: absolute;
+	padding-bottom: 72px;
+	box-sizing: border-box;
 	/* bottom: 72px; */
 }
 
@@ -62,6 +84,10 @@
 	border-radius: 18px 18px 0 18px;
 	padding: 6px 12px;
 	vertical-align: center;
+}
+
+.sent-message-text .message-link {
+	color: white;
 }
 
 .notice {

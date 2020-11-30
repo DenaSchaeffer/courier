@@ -125,13 +125,14 @@
             console.log('sender:',message.sender,'\tmy username:', myUsername);
             let time = new Date(message.timestamp);
             console.log(message.timestamp);
-            let timestamp = `${time.getHours()}:${time.getMinutes()} ${months[time.getMonth()]} ${time.getDate()}, ${time.getFullYear()}`
+            let timestamp = `${time.getHours()}:${time.getMinutes()} ${months[time.getMonth()]} ${time.getDate()}, ${time.getFullYear()}`;
+            let messagetext = urlify(sanitizeHTML(message.message));
             if (message.sender === myUsername) {
                 messageElement = `
                     <div class="sent-message d-flex flex-row w-100">
                         <div class="spacer"></div>
                         <div class="sent-message-text bg-primary">
-                            ${urlify(sanitizeHTML(message.message))}
+                            ${messagetext}
                         </div>
                         <div class="timestamp">
                             ${timestamp}
@@ -147,7 +148,7 @@
                             ${sanitizeHTML(message.sender)}
                         </div>
                         <div class="message-text bg-light">
-                            ${sanitizeHTML(message.message)}
+                            ${messagetext}
                         </div>
                         <div class="spacer"></div>
                         <div class="timestamp">
@@ -412,7 +413,7 @@
         function urlify(text) {
             var urlRegex = /(https?:\/\/[^\s]+)/g;
             return text.replace(urlRegex, function(url) {
-            return '<a href="' + url + '">' + url + '</a>';
+            return '<a class="message-link" target="_blank" href="' + url + '">' + url + '</a>';
             })
                 // or alternatively
                 // return text.replace(urlRegex, '<a href="$1">$1</a>')
@@ -425,7 +426,7 @@
 
     <!-- NAVBAR -->
 
-    <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light sticky-top mb-3">
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light mb-3">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -486,7 +487,7 @@
 
             <!-- SIDEBAR/USER LIST -->
 
-            <div class="col-3">
+            <div id="sidebar" class="col-3">
                 <button class="btn btn-primary mb-3" onclick="hideMessageForm(); showGroupForm();">New Group</button>
                 <div class="list-group" id="userList">
                     <div class="list-group-item active" data-toggle="list"
@@ -505,7 +506,7 @@
                 <!-- MESSAGE SCREEN -->
 
                 <div id="messages" class="w-100"></div>
-                <div id="messageForm" class="col-12">
+                <div id="messageForm" class="col-12 bg-light">
                     <p id="typingMessage"></p>
                     <form onsubmit="sendmessage(); return false;" class="col-9">
                         <div class="form-group">
