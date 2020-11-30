@@ -80,6 +80,11 @@
         /* MESSAGING FUNCTIONS */
 
         function sendmessage() {
+            //filter out swear words (fuck, shit, bitch, ass, damn)
+            console.log('fuck');
+
+
+
             if (recipient === 'all') {
                 socketio.emit("chat", document.getElementById('yourmessage').value);
             } else if (groupRecipient) {
@@ -398,7 +403,10 @@
             //     }
             // }
         });
-
+        
+        socketio.on("swear", () => {
+            alert("Your message was filtered for foul language");
+        });
 
 
         function urlify(text) {
@@ -409,6 +417,7 @@
                 // or alternatively
                 // return text.replace(urlRegex, '<a href="$1">$1</a>')
         }
+
 
 
 

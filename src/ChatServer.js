@@ -101,10 +101,11 @@ socketio.on("connection", (socketclient) => {
             console.log("Unauthenticated client sent a chat. Supress!");
             return;
         }
+        var newMessage = filterMessage(message);
         var chatmessage = message;
         var timestamp = Date.now();
         var chatmessage = {
-            message: message,
+            message: newMessage,
             sender: socketclient.username,
             receiver: 'all',
             timestamp: timestamp
@@ -189,7 +190,37 @@ socketio.on("connection", (socketclient) => {
         var logmsg = "Debug:> logged out";
         console.log(logmsg);
     });
+
+    function filterMessage(chatmessage)
+{
+    //filter out all swearwords
+    newMessage = chatmessage;
+
+    var swear3 = /ass|pee/gi;
+    var swear4 = /fuck|shit|damn|crap|piss|poop/gi;
+    var swear5 = /bitch/gi;
+    var allSwears = ["ass", "fuck", "shit", "bitch", "damn", "crap", "piss", "poop", "pee"];
+
+    for(x = 0; x <allSwears.length; x++)
+    {
+        if(newMessage.includes(allSwears[x]))
+        {
+            newMessage = newMessage.replace(swear3, "***");
+            newMessage = newMessage.replace(swear4, "****");
+            newMessage = newMessage.replace(swear3, "*****");
+
+            socketclient.emit("swear");
+
+            return newMessage;
+        }
+        
+    }
+    return newMessage;
+
+}
 });
+
+
 
 
 
@@ -241,8 +272,5 @@ function validatePassword(password) {
     //require at least one digit, one upper and lower case letter
     return /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(password);
 }
-
-
-
 
 
