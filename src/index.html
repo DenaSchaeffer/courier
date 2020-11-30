@@ -126,7 +126,7 @@
                     <div class="sent-message d-flex flex-row w-100">
                         <div class="spacer"></div>
                         <div class="sent-message-text bg-primary">
-                            ${sanitizeHTML(message.message)}
+                            ${urlify(sanitizeHTML(message.message))}
                         </div>
                         <div class="timestamp">
                             ${timestamp}
@@ -398,6 +398,19 @@
             //     }
             // }
         });
+
+
+
+        function urlify(text) {
+            var urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, function(url) {
+            return '<a href="' + url + '">' + url + '</a>';
+            })
+                // or alternatively
+                // return text.replace(urlRegex, '<a href="$1">$1</a>')
+        }
+
+
 
     </script>
 
