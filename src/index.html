@@ -9,9 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-    <link rel="icon" 
-      type="image/png" 
-      href="/assets/logo.png">
+    <link rel="icon" type="image/png" href="/assets/logo.png">
 </head>
 
 <body style="height: 100vh;">
@@ -27,6 +25,24 @@
         var messages = [];
         var users = [];
         var typingTimeout;
+        var scrolled = false;
+
+        var messageWindow = document.getElementById("messages");
+        addScrollListener();
+
+        function addScrollListener() {
+            if (messageWindow) {
+                messageWindow.addEventListener('scroll', function () {
+                    var messages = document.getElementById("messages");
+                    if (messages.scrollTop = messages.scrollHeight) {
+                        scrolled = false;
+                    } else {
+                        console.log('changing scrolled to true');
+                        scrolled = true;
+                    }
+                });
+            }
+        }
 
         const months = [
             'Jan',
@@ -176,6 +192,10 @@
                 let time = new Date(message.timestamp);
                 messageWindow.innerHTML += createMessage(message);
             });
+
+            if (!scrolled) {
+                scrollToBottom();
+            }
         }
 
         function updateUserList() {
@@ -202,10 +222,17 @@
             selectedUser.classList.add('active');
         }
 
-
         function selectRecipient(newRecipient) {
             recipient = newRecipient;
             displayMessages();
+        }
+
+        function scrollToBottom() {
+            if (!scrolled) {
+                console.log('scrolling to bottom');
+                var messages = document.getElementById("messages");
+                messages.scrollTop = messages.scrollHeight;
+            }
         }
 
         /* OTHER FEATURES */
@@ -252,11 +279,11 @@
         }
 
         function toggleStrobeMode() {
-            for(i=0; i<5000; i++) {
+            for (i = 0; i < 5000; i++) {
                 toggleDarkMode();
                 let strobeTimeout = setTimeout(() => {
                     toggleDarkMode();
-                 }, 800);
+                }, 800);
             }
         }
 
@@ -368,6 +395,9 @@
                 "You are successfully logged in! Can start chatting now.<br>";
             document.getElementById('username').value = '';
             password = document.getElementById('password').value = '';
+
+            // messageWindow = document.getElementById("messages");
+            // addScrollListener();
         });
 
         socketio.on("registration", (result) => {
@@ -409,7 +439,7 @@
             //     }
             // }
         });
-        
+
         socketio.on("swear", () => {
             alert("Your message was filtered for foul language");
         });
@@ -417,11 +447,11 @@
 
         function urlify(text) {
             var urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, function(url) {
-            return '<a class="message-link" target="_blank" href="' + url + '">' + url + '</a>';
+            return text.replace(urlRegex, function (url) {
+                return '<a class="message-link" target="_blank" href="' + url + '">' + url + '</a>';
             })
-                // or alternatively
-                // return text.replace(urlRegex, '<a href="$1">$1</a>')
+            // or alternatively
+            // return text.replace(urlRegex, '<a href="$1">$1</a>')
         }
 
 
