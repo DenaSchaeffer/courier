@@ -12,7 +12,7 @@ Instructor: Dr. Phu Phung
 
 ## Courier: The Messenger Application
 ![Logo](logo.png)
-
+https://cps490-messenger.herokuapp.com
 
 ## Team 8
 
