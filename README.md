@@ -599,26 +599,26 @@ We implemented the following use cases into our messenger application:
 
 * Users can toggle between light mode: 
 
-![light](lightmode.png)
+![light](screenshots/lightmode.png)
 * Or dark mode:
 
-![dark](darkmode.png)
+![dark](screenshots/darkmode.png)
 
 * Users can register to the system:
 
-![register](register.png)
+![register](screenshots/register.png)
 
 * Users can logon to the system with their username and password:
 
-![login](userlogin.png)
+![login](screenshots/userlogin.png)
 
 * Once logged in, the users can send messages in the chat and see who joins the chat:
 
-![chat](userlist.png)
+![chat](screenshots/userlist.png)
 
 * Users can see when someone is typing:
 
-![chat](typing.png)
+![chat](screenshots/typing.png)
 
 * Users can send a private chat via the selection of an active user:
 
@@ -626,20 +626,20 @@ We implemented the following use cases into our messenger application:
 
 * Users can receive a private chat: 
 
-![receive-private](privatefrom.png)
+![receive-private](screenshots/privatefrom.png)
 
 * Users private messages are not seen by others that are not recipients in the same chat: 
 
-![private](noprivate.png)
+![private](screenshots/noprivate.png)
 
 * Users can create a group chat:
 
-![chat](group1.png)
-![chat](group2.png)
+![chat](screenshots/group1.png)
+![chat](screenshots/group2.png)
 
 * Users can logout (brings user back to login screen and notifies active users): 
 
-![chat](logout.png)
+![chat](screenshots/logout.png)
 
 * Users can view the list of active users
 * Store chat messages in database
@@ -651,7 +651,7 @@ We implemented the following use cases into our messenger application:
 
 ### Progress Report
 
-![Sprint 0 timeline](ganttchart.png)
+![Sprint 0 timeline](screenshots/ganttchart.png)
 
 #### Sprint 0
 ##### Completed Tasks:
