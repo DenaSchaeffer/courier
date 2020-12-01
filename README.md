@@ -12,7 +12,8 @@ Instructor: Dr. Phu Phung
 
 ## Courier: The Messenger Application
 ![Logo](logo.png)
-https://cps490-messenger.herokuapp.com
+
+<https://cps490-messenger.herokuapp.com>
 
 ## Team 8
 
@@ -654,8 +655,13 @@ We implemented the following use cases into our messenger application:
 ![hash](screenshots/register4.png)
 
 * Users can view the message history
-* Secure against web attacks
+![history](screenshots/chat-history.png)
+
+* Secure against web attacks by turning html tags into string literals
+![xss](screenshots/xss-prevention.png)
+
 * Users can send clickable URLs
+![URL](screenshots/links.png)
 
 * When users type foul language, they will be alerted and the message will be filtered
 
