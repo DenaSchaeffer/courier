@@ -44,7 +44,7 @@ Source code repository (private access): <https://bitbucket.org/cps490f20-team8/
 
 The messenger application is a live-chat application that communicates between the client and chat server (web application in Node.js). 
 
-![High Level Architecture](architecture.png)
+![High Level Architecture](screenshots/architecture.png)
 
 ## System Analysis
 
@@ -72,7 +72,7 @@ The messenger application is a live-chat application that communicates between t
 
 ## Use cases
 
-![Use Case Diagram](usecase.png)
+![Use Case Diagram](screenshots/imaage.png)
 
 #### Register an Account
  * Actor: Unregistered user
@@ -622,7 +622,7 @@ We implemented the following use cases into our messenger application:
 
 * Users can send a private chat via the selection of an active user:
 
-![private-send](private.png)
+![private-send](screenshots/private.png)
 
 * Users can receive a private chat: 
 
