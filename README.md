@@ -1,6 +1,7 @@
 # README.md - CPS490 Report Template
 
 Source: <https://bitbucket.org/capstones-cs-udayton/cps490/src/master/README.md>
+Latest Commit: <https://bitbucket.org/cps490f20-team8/cps490-project-team8/commits/71434f1c18c05d3290148026511c5c6a3d378bfe>
 
 University of Dayton
 
@@ -17,7 +18,7 @@ Instructor: Dr. Phu Phung
 # The Messenger Application
 
 
-# Team members
+# Team 8
 
 1.  Jacob Scheetz, scheetzj2@udayton.edu
 2.  Beth Hosek, hoseke1@udayton.edu
@@ -29,13 +30,14 @@ Instructor: Dr. Phu Phung
 
 Management board (private access): <https://trello.com/b/ddzbQQx4/team-project>
 
-Source code repository (private access): https://bitbucket.org/cps490f20-team8/cps490-project-team8/src/master/
+Source code repository (private access): <https://bitbucket.org/cps490f20-team8/cps490-project-team8/src/master/>
 
 
 ## Revision History
 
 | Date     |   Version     |  Description |
 |----------|:-------------:|-------------:|
+|11/30/2020|  0.4          | Sprint 3
 |10/28/2020|  0.3          | Sprint 2     |
 |09/30/2020|  0.2          | Sprint 1     |
 |09/10/2020|  0.1          | added details|
@@ -86,6 +88,7 @@ The messenger application is a live-chat application that communicates between t
 ## Database 
 
 * MongoDB is the database hosting the data for our app. It stores the registered user data into a JSON file that is later parsed through upon login.
+* EXPAND HERE
 
 ## User Interface
 
@@ -95,9 +98,7 @@ The messenger application is a live-chat application that communicates between t
 * Our third implementation is showing when a user is typing to a group. 
 
 # Implementation
-## Sprint 2
-* During this sprint, we were working on finishing the major chunks of our messenger application.
-* We implemented further use cases to our app:
+* We implemented the following use cases into our messenger application:
 1. Users need to login with username/password. Invalid username/password cannot be logged in
 2. Anyone can register for a new account to log in
 3. Only logged-in users can send/receive messages (any)
@@ -255,10 +256,10 @@ socketio.on("connection", function (socketclient) {
 ## Deployment
 
 * Our team decided to deploy the application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code and have the ability to create a dynamic web application.
+* ELABORATE MORE
+* URL: <https://cps490-messenger.herokuapp.com/>
 
 # Software Process Management
-
-_(Start from Sprint 0, keep updating)_
 
 Introduce how your team uses a software management process, e.g., Scrum, how your teamwork, collaborate.
 
@@ -320,6 +321,20 @@ Duration: 10-02-2020 to 10-29-2020
 2.  Beth Hosek 2, 8 hours, contributed in README, logout and use case diagrams, powerpoint slides 
 3.  Justen Stall, 8 hours, contributed in README, authentication and separated chat windows, powerpoint slides 
 4.  Dena Schaeffer, 8 hours, contributed in README, group messaging and use case diagrams, powerpoint slides 
+
+### Sprint 3
+#### Completed Tasks:
+1. ..
+2. ..
+3. ..
+
+#### Contributions: 
+
+1.  Jacob Scheetz, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+2.  Beth Hosek 2, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+3.  Justen Stall, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+4.  Dena Schaeffer, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+
 
 #### Sprint Retrospective:
 ### Sprint 2: ###
