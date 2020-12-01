@@ -121,7 +121,7 @@ socketio.on("connection", (socketclient) => {
             return;
         }
         var receivingUser = users.find(user => user.id === message.socketId);
-        var newMessage = filterMessage(message);
+        var newMessage = filterMessage(message.message);
         // var stringchatmessage = "(PRIVATE) " + socketclient.username + " says: " + message.message;
         // var stringsentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
         var timestamp = Date.now();
@@ -149,7 +149,7 @@ socketio.on("connection", (socketclient) => {
             return;
         }
         // var stringmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
-        var newMessage = filterMessage(message);
+        var newMessage = filterMessage(message.message);
         var chatmessage = {
             message: "(" + message.groupName + ") " + socketclient.username + " says: " + newMessage,
             sender: message.groupName

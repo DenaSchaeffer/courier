@@ -110,9 +110,9 @@
                     groupName: recipient
                 });
             } else {
-                console.log(recipient)
+                console.log(recipient);
                 var receivingUser = users.find(user => user.username === recipient);
-                console.log(receivingUser)
+                console.log(receivingUser);
                 console.log('sending private chat');
                 socketio.emit("privatechat", {
                     message: document.getElementById('yourmessage').value,
