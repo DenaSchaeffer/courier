@@ -77,53 +77,57 @@ The messenger application is a live-chat application that communicates between t
  * User Story: As a registered user, I want to login to access the features for registered users.
  * Use Case Description: in index.html, user enters username and password. Then in ChatServer.js, a boolean variable is created, with the results of sending the username/password to messengerdb.js and checking it (while hashing the password) with the database. Back in ChatServer.js, if it returns true, the user will be pushed to the active list of users and the chat screen will be visible. If it returns false, the user will be notified and will stay on the login screen.
 #### Send Message
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to send a message to all of the users in the users list.
  * Use Case Description: In index.html, user identifies 'all users' as a recipient and typed message is read. Then in ChatServer.js, check that user is authenticated.  After that, check message for language, and send the message object with inputted&filtered message, sender, reciever (all), and timestamp. Message object is stored via messengerdb.js, and sent from ChatServer.js to index.html, where it is displayed
 #### Send Private Message
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to be able to send a private message to another user.
  * Use Case Description: In index.html, user identifies a specific user as a recipient and typed message is read. Then in ChatServer.js, check that user is authenticated.  After that, check message for language, and send the message object with inputted&filtered message, sender, reciever, and timestamp. Message object is stored for both sender and reciever via messengerdb.js, and sent from ChatServer.js to index.html, where it is displayed
-#### Send Group Chat
- * Actor: Registered User
+#### Create Group
+ * Actor: Authenticated User
+ * User Story: As a registered user, I want to be able to create a group from logged-in users
+ * Use Case Description: in index.html, select users for group from logged-in users and input group name. Then in ChatServer, create group. Back in index.html, group should be a selectable reciepient.
+ #### Send Group Chat
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to be able to create and send messages to a group of selected users from the active user list. 
  * Use Case Description: In index.html, user identifies a group as a recipient and typed message is read. Then in ChatServer.js, check that user is authenticated.  After that, check message for language, and send message object with inputted&filtered message, sender, reciever (group), and timestamp. Message object is stored via messengerdb.js, and sent from ChatServer.js to index.html, where it is displayed
 #### View Message History
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to be able to view the message history from times I am logged out or inactive.
- * Use Case Description:
+ * Use Case Description: on login, in index.html call to colllect all mesages for any given user (public, private, and group messages). messengerdb.js will collect messages from the database and send back through ChatServer.js. Then, index.html will display them in the appropriate windows.
 #### User Typing Notification
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to see when other users are typing a message. 
- * Use Case Description:
+ * Use Case Description: on action of typing, in index.html call the typing function, which in ChatServer.js will create a message of "(user) is typing" and call index.html, which will broadcst it to all users. when sending memssage, broadcast will end.
 #### Dark Mode
- * Actor: Unregistered or Registered User
+ * Actor: Unregistered, Registered, and Authenticated User
  * User Story: As a user, I want to be able to toggle dark mode with the click of a button.
  * Use Case Description: In index.html, click of butten detects the background color (White or Black), and changes to the opposite. This will also change the color of the text & the chat bubbles.
 #### Send URLs
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to be able to send clickable URLS through the messages.
- * Use Case Description: 
+ * Use Case Description: In index.html, check user-inputted message to be a URL using regulat expression. If message is found to be a URL, display clickable link
 #### Secure Against XSS
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to be protected against cross site scripting. 
- * Use Case Description:
+ * Use Case Description: in ChatServer.js, xss filter, the result of adding a username, messages sent to any/all users and all properties of a message (sender/reciever/timestamp) to prevent against malicious insertion of code
 #### Filter Language
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to have foul language filtered out in the messages and be alerted if my message is filtered.
- * Use Case Description:
+ * Use Case Description: in ChatServer.js, before sending a message filter for swear words from a given list. If a swearword is found, replace word with asteriks same length of word, and call index.html to alert user that message  has been filtered. Then, proceede with sending message function
 #### Encrypt Passwords
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to have my password encrypted for my account to increase security. 
- * Use Case Description:
+ * Use Case Description: When creating user, once it gets to messenger.db to add user to database, hash the password and store the hashed password instead. Then, when logging in, same file will hash the plaintext password entered by the user and check that to the hashed password in the database.
 #### Active Users List
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to have an updated list of active users who are logged into the chat application.
- * Use Case Description:
+ * Use Case Description: On login, index.html will display a list of all users who have previously logged in, using the users list in ChatServer.js. On logout, the users list is called again in ChatServer.js, and will update for active users via index.html
 #### Logout
- * Actor: Registered User
+ * Actor: Authenticated User
  * User Story: As a registered user, I want to be able to logout of the application.
- * Use Case Description:
+ * Use Case Description: On logout via the button, user will be redirected back to the loginUI via index.html. Then for all logouts (either via the logout button or by exiting the tab), chatserver.js will remove user from list of active users and emit message to still-active users that the user has left the chat. Then active user list will be updated to remove user so you cannot send them any messages.
 
 
 ## System Design
