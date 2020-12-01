@@ -138,6 +138,7 @@ The messenger application is a live-chat application that communicates between t
 
 ## System Design
 ![Sequence_Diagram](system-sequence-diagram.png)
+
 * Our system is designed such that a user must login before they are able to access the application.
 * Once logged in, the user is able to send messages to everyone, send messages privately, or view the messages they have been sent.
 
