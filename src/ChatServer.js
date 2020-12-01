@@ -48,7 +48,7 @@ socketio.on("connection", (socketclient) => {
 
             //load chat history
             var chat_history = await messengerdb.loadChatHistory(username);
-            if(chat_history && chat_history.length > 0){
+            if (chat_history && chat_history.length > 0) {
                 chat_history = chat_history.reverse();
                 //reverse the order as we get the latest first
                 // var data = xssfilter(chat_history);
@@ -125,37 +125,42 @@ socketio.on("connection", (socketclient) => {
         // var stringchatmessage = "(PRIVATE) " + socketclient.username + " says: " + message.message;
         // var stringsentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
         var timestamp = Date.now();
-        var chatmessage = {
+        var message = {
             message: newMessage,
             sender: socketclient.username,
-            receiver: socketclient.id,
+            receiver: message.receiver,
             timestamp: timestamp
         }
-        var sentmessage = {
-            message: newMessage,
-            sender: socketclient.username,
-            receiver: receivingUser.username,
-            timestamp: timestamp
-        }
-        console.log(chatmessage);
-        socketio.to(message.socketId).emit("chat", chatmessage);
-        socketio.to(socketclient.id).emit("chat", sentmessage);
-    });
+        // var sentmessage = {
+        //     message: newMessage,
+        //     sender: socketclient.username,
+        //     receiver: receivingUser.username,
+        //     timestamp: timestamp
+        // }
+        console.log(message);
+        SendToAuthenticatedClient(socketclient, "chat", message);
+        // socketio.to(socketclient.id).emit("chat", message);
 
+        // socketio.to(message.socketId).emit("chat", chatmessage);
+    });
 
     socketclient.on("groupchat", (message) => {
         if (!socketclient.authenticated) {
             console.log("Unauthenticated client sent a chat. Supress!");
             return;
         }
+        var timestamp = Date.now();
         // var stringmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
         var newMessage = filterMessage(message.message);
-        var chatmessage = {
-            message: "(" + message.groupName + ") " + socketclient.username + " says: " + newMessage,
-            sender: message.groupName
+        var message = {
+            message: newMessage,
+            sender: socketclient.username,
+            receiver: message.groupName,
+            timestamp: timestamp
         }
-        console.log(chatmessage);
-        socketio.to(message.groupName).emit("chat", chatmessage);
+        console.log(message);
+        SendToAuthenticatedClient(socketclient, "chat", chatmessage);
+        // socketio.to(message.groupName).emit("chat", chatmessage);
     })
 
     socketclient.on("typing", () => {
@@ -203,20 +208,18 @@ socketio.on("connection", (socketclient) => {
         var swear6 = /Justin/gi;
         var allSwears = ["ass", "fuck", "shit", "bitch", "damn", "crap", "piss", "poop", "pee", "hell ", "Justin", "cunt"];
 
-        for(x = 0; x <allSwears.length; x++)
-        {
-            if(newMessage.includes(allSwears[x]))
-            {
+        for (x = 0; x < allSwears.length; x++) {
+            if (newMessage.includes(allSwears[x])) {
                 newMessage = newMessage.replace(swear3, "***");
                 newMessage = newMessage.replace(swear4, "****");
                 newMessage = newMessage.replace(swear5, "*****");
-                newMessage = newMessage.replace(swear6, "******"); 
+                newMessage = newMessage.replace(swear6, "******");
 
                 socketclient.emit("swear");
 
                 return newMessage;
             }
-            
+
         }
         return newMessage;
 
@@ -258,11 +261,17 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
             } else if (typeof data === 'string') {
                 data = xssfilter(data);
             }
-            socketclient.emit(type, data);
+            if (type === "chat") {
+                messengerdb.storePublicChat(data);
+                if (socketclient.username === data.receiver || socketclient.username === data.sender) {
+                    socketclient.emit(type, data);
+                }
+            } else {
+                socketclient.emit(type, data);
+            }
             var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
             console.log(logmsg);
-            if(type=="chat")
-                messengerdb.storePublicChat(data);
+
         }
     }
 }

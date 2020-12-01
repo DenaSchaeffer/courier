@@ -100,7 +100,6 @@
         /* MESSAGING FUNCTIONS */
 
         function sendmessage() {
-
             if (recipient === 'all') {
                 socketio.emit("chat", document.getElementById('yourmessage').value);
             } else if (groupRecipient) {
@@ -117,7 +116,7 @@
                 socketio.emit("privatechat", {
                     message: document.getElementById('yourmessage').value,
                     socketId: receivingUser.id,
-                    receiver: recipient
+                    receiver: receivingUser.username
                 });
                 // console.log('private chat emitted');
             }
