@@ -80,11 +80,7 @@
         /* MESSAGING FUNCTIONS */
 
         function sendmessage() {
-            //filter out swear words (fuck, shit, bitch, ass, damn)
-            console.log('fuck');
-
-
-
+ 
             if (recipient === 'all') {
                 socketio.emit("chat", document.getElementById('yourmessage').value);
             } else if (groupRecipient) {
