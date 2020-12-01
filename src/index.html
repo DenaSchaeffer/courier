@@ -126,9 +126,9 @@
         }
 
         function createMessage(message) {
-            console.log('sender:',message.sender,'\tmy username:', myUsername);
+            // console.log('sender:',message.sender,'\tmy username:', myUsername);
             let time = new Date(message.timestamp);
-            console.log(message.timestamp);
+            // console.log(message.timestamp);
             let timestamp = `${time.getHours()}:${time.getMinutes()} ${months[time.getMonth()]} ${time.getDate()}, ${time.getFullYear()}`;
             let messagetext = urlify(sanitizeHTML(message.message));
             if (message.sender === myUsername) {
@@ -519,9 +519,9 @@
 
                 <!-- MESSAGE SCREEN -->
 
-                <div id="messages" class="w-100"></div>
-                <div id="messageForm" class="col-12 bg-light">
-                    <p id="typingMessage"></p>
+                <div id="messages" class="w-100 pr-3"></div>
+                <p id="typingMessage" clas="w-100 float-right"></p>
+                <div id="messageForm" class="w-100 bg-light pt-3 pr-3 pl-3">
                     <form onsubmit="sendmessage(); return false;" class="col-9">
                         <div class="form-group">
                             <!-- <label>Your message:</label> -->
