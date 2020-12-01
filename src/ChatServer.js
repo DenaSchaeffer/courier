@@ -123,15 +123,16 @@ socketio.on("connection", (socketclient) => {
         var receivingUser = users.find(user => user.id === message.socketId);
         // var stringchatmessage = "(PRIVATE) " + socketclient.username + " says: " + message.message;
         // var stringsentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
+        var newMessage = filterMessage(message);
         var timestamp = Date.now();
         var chatmessage = {
-            message: message.message,
+            message: newMessage,
             sender: socketclient.username,
             receiver: socketclient.id,
             timestamp: timestamp
         }
         var sentmessage = {
-            message: message.message,
+            message: newMessage,
             sender: socketclient.username,
             receiver: receivingUser.username,
             timestamp: timestamp
@@ -148,8 +149,9 @@ socketio.on("connection", (socketclient) => {
             return;
         }
         // var stringmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
+        var newMessage = filterMessage(message);
         var chatmessage = {
-            message: "(" + message.groupName + ") " + socketclient.username + " says: " + message.message,
+            message: "(" + message.groupName + ") " + socketclient.username + " says: " + newMessage,
             sender: message.groupName
         }
         console.log(chatmessage);
