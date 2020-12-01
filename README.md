@@ -48,21 +48,29 @@ The messenger application is a live-chat application that communicates between t
 
 ## System Analysis
 
-* In the current state of the application, sprint 2, we are able to deploy our application to Heroku so that the hosting is taken care of. 
+* In the current state of the application, sprint 3, we are able to deploy our application to Heroku so that the hosting is taken care of. 
 * With this, the application does not have to be spun up locally to interact with the application everytime. This allows users to access the app who are not on the local machine.
 
 ### User Requirements
 
-- Users can type text and send a single receiver
+- Users can type text and send to active users list
+- Users can type text and send to a single receiver
 - Users can type text and send to a group
+- Users can create a group
 - Users can register to the system
 - Users can login with a registered account
 - Users should receive the messages sent to them in real time
 - Users can view the message history
-- Users can see if the sent messages have been read
+- Store chat messages in database
+- Encrypt passwords
+- Users can view the message history
+- Secure against web attacks
+- Users can send clickable URLs
+- Filter language
+- Users can logout
 
 
-### Use cases
+## Use cases
 
 ![Use Case Diagram](usecase.png)
 
@@ -129,30 +137,26 @@ The messenger application is a live-chat application that communicates between t
 
 
 ## System Design
-
+![Sequence_Diagram](system-sequence-diagram.png)
 * Our system is designed such that a user must login before they are able to access the application.
 * Once logged in, the user is able to send messages to everyone, send messages privately, or view the messages they have been sent.
 
-### Use-Case Realization
-
-* The functionality that we as a team feel is necessary to implement next is the ability to show a list of active users within the system. We feel that this will help improve the practicality of our application
-
-### Database 
-
-* MongoDB is the database hosting the data for our app. It stores the registered user data into a JSON file that is later parsed through upon login.
-* EXPAND HERE
+### Database
+* MongoDB hosted the data for our messaging application. It stores the registered user data, consisting of their username and hased passwords. This database also stores the messages sent in general and private messages. This data is stores in JSON files that are later parsed through upon login or retrieval of chat history. 
 
 ### User Interface
 
 * Our first distinctive UI element that we have implemented into our system is a Dark Mode toggle button. 
 * This implementation allows the end user to click a button to change the interface color depending on preference.
-* Our second implementation is having read receipts on messages a user has sent.
 * Our third implementation is showing when a user is typing to a group. 
+* Users can toggle between different chat rooms
+* A simple and familiar chat design was implemented with chat bubbles. The chat bubbles are separated by having the sending user's messages to the right side of the site, and other user's messages recieved on the left side. 
+* There are notifications that alert of a user logging in and out that are centered on the screen. 
 
 ## Implementation
-* We implemented the following use cases into our messenger application:
+We implemented the following use cases into our messenger application:
 
-1. Users need to login with username/password. Invalid username/password cannot be logged in
+* Users need to login with username/password. Invalid username/password cannot be logged in
 ```JavaScript
   
   		socketclient.on("login", async (username, password) => {
@@ -192,7 +196,7 @@ The messenger application is a live-chat application that communicates between t
          socketio.emit("login", username, password);
         }
 ```
-2. Anyone can register for a new account to log in
+* Anyone can register for a new account to log in
 ```JavaScript
     socketclient.on("register", (username, password) => {
         if (validateUsername(username) && validatePassword(password)) {
@@ -228,7 +232,7 @@ The messenger application is a live-chat application that communicates between t
             socketio.emit("register", username, password);
         }
 ```
-3. Only logged-in users can send/receive messages (any)
+* Only logged-in users can send/receive messages (any)
 ```javascript
 
     socketclient.on("chat", (message) => {
@@ -275,7 +279,7 @@ The messenger application is a live-chat application that communicates between t
             }
         }
 ```
-4. Logged-in users can logout
+* Logged-in users can logout
 ```javascript
     socketclient.on("logout", () => {
         users = users.filter(user => user.id !== socketclient.id);
@@ -304,7 +308,7 @@ The messenger application is a live-chat application that communicates between t
             showLoginScreen();
         }
 ```
-5. Logged-in users can create a group chat (more than 2 members)
+* Logged-in users can create a group chat (more than 2 members)
 ```javascript
     socketclient.on("creategroup", (groupName, selections) => {
         console.log("users being added to group:", selections);
@@ -326,7 +330,7 @@ The messenger application is a live-chat application that communicates between t
             socketio.emit("creategroup", groupName, selections);
         }
 ```
-6. Logged-in users in a group chat can send/receive messages from the group
+* Logged-in users in a group chat can send/receive messages from the group
 ```javascript
         function sendmessage() {
  
@@ -368,7 +372,7 @@ The messenger application is a live-chat application that communicates between t
         socketio.to(message.groupName).emit("chat", chatmessage);
     })
 ```
-7. Seperated chat window for group chat
+* Seperated chat window for group chat
 ```html
         function createGroup() {
             var userSelect = document.getElementById('userSelect');
@@ -379,7 +383,7 @@ The messenger application is a live-chat application that communicates between t
             socketio.emit("creategroup", groupName, selections);
         }
 ```
-9. User typing notification
+* User typing notification
 ```javascript
     socketclient.on("typing", () => {
         var typingmessage = socketclient.username + " is typing...";
@@ -392,7 +396,7 @@ The messenger application is a live-chat application that communicates between t
             socketio.emit("typing")
         }
 ```
-10. Dark Mode
+* Dark Mode
 ```html
         function toggleDarkMode() {
             var body = document.body;
@@ -430,7 +434,7 @@ The messenger application is a live-chat application that communicates between t
             }
         }
 ```
-11. Send Clickable URLs
+* Send Clickable URLs
 ```html
         function urlify(text) {
             var urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -441,7 +445,7 @@ The messenger application is a live-chat application that communicates between t
                 // return text.replace(urlRegex, '<a href="$1">$1</a>')
         }
 ```
-12. Prevent XSS Attacks
+* Prevent XSS Attacks
 ```javascript
 	function SendToAuthenticatedClient(sendersocket, type, data) {
     	var sockets = socketio.sockets.sockets;
@@ -468,8 +472,8 @@ The messenger application is a live-chat application that communicates between t
     	}
 	}
 ```
-13. Filter language 
-```html
+* Filter language 
+```javascript
     function filterMessage(chatmessage) {
         //filter out all swearwords
         newMessage = chatmessage;
@@ -507,7 +511,7 @@ The messenger application is a live-chat application that communicates between t
 
 ```
 
-14. Encrypt Passwords
+* Encrypt Passwords
 ```javascript
 	const bcrypt = require("bcryptjs")
 	const checklogin = async (username, password) => {
@@ -547,7 +551,7 @@ The messenger application is a live-chat application that communicates between t
     	});
 	}
 ```
-15. Active Users List
+* Active Users List
 ```javascript
 	var users = [];
 	 	if (checklogin) {
@@ -558,7 +562,7 @@ The messenger application is a live-chat application that communicates between t
 	users = users.filter(user => user.id !== socketclient.id);
 
 ```
-16. Load Chat History
+* Load Chat History
 
 ```javascript
 	const storePublicChat = (message) => {
@@ -584,168 +588,13 @@ The messenger application is a live-chat application that communicates between t
 	module.exports = { checklogin, addUser,storePublicChat, loadChatHistory }
 ```
 
-
-### Sprint 1
-
-* During this sprint, we were mainly focused on the funtionality of our messenger application. 
-* We implemented the following the uses: The ability to login to the system, the ability to send messages to groups, the ability to send a message to a single user, and the ability to toggle dark and light mode on the interface. 
-* This implementations were done by deploying the application on Heroku, furthering our development of the ChatServer.js file in node and updating the home page in HTML. 
-* the updates to ChatServer.js are in the code snippets below:
-``` 
-	function SendToAuthenticatedClient(sendersocket, type, data){
-    	var sockets = socketio.sockets.sockets;
-    	for(var socketId in sockets){
-        	var socketclient=sockets[socketId];
-        	if(socketclient.authenticated){
-            	socketclient.emit(type,data);
-            	var logmsg= "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
-            	console.log(logmsg);
-        }
-    }
-
-}
-```
-
-```
-	socketio.on("connection", function (socketclient) {
-   		 console.log("A new Socket.IO client is connected. ID= " + socketclient.id)
-    	socketclient.on("login", (username,password) => {
-        	socketclient.username = username;
-        	console.log("Debug>got username=" + username + " password="+ password);
-        	if(DataLayer.checklogin(username,password)){
-            	socketclient.authenticated=true;
-            	socketclient.emit("authenticated");
-            	var welcomemessage = username + " has joined the chat system!";
-            	console.log(welcomemessage);
-            	//socketio.sockets.emit("welcome", welcomemessage);
-            	SendToAuthenticatedClient(socketclient, "Welcome", welcomemessage);
-          	}
-    	}
-
-        
-    socketclient.on("chat", (message) => {
-        if(!socketclient.authenticated)
-        {
-            console.log("Unauthenticated client sent a chat. Supress!");
-            return;
-        }
-        var chatmessage = socketclient.username + " says: " + message;
-        console.log(chatmessage);
-        socketio.sockets.emit("chat", chatmessage);
-        }
-    });
-```
-
 ### Deployment
 
-* Our team decided to deploy the application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code and have the ability to create a dynamic web application.
-* ELABORATE MORE
+* Our team decided to deploy the application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code, and have the ability to create a dynamic web application.
 * URL: <https://cps490-messenger.herokuapp.com/>
-* Latest Commit: <https://bitbucket.org/cps490f20-team8/cps490-project-team8/commits/71434f1c18c05d3290148026511c5c6a3d378bfe>
+* Latest Commit: <https://bitbucket.org/cps490f20-team8/cps490-project-team8/commits/71434f1c18c05d3290148026511c5c6a3d378bfe> UPDATE LATER
 
-## Software Process Management
-
-Introduce how your team uses a software management process, e.g., Scrum, how your teamwork, collaborate.
-
-Include the Trello board with product backlog and sprint cycles in an overview figure and also in detail description. _(Main focus of Sprint 0)_
-
-Also, include the Gantt chart reflects the timeline from the Trello board. _(Main focus of Sprint 0)_
-
-![Sprint 0 timeline](ganttchart.png)
-
-### Scrum process
-
-#### Sprint 0
-##### Completed Tasks:
-1. Use cases defined
-2. Use case diagram made
-3. Gantt chart created in Trello
-
-##### Contributions: 
-
-1.  Jacob Scheetz, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-2.  Beth Hosek 2, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-3.  Justen Stall, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-4.  Dena Schaeffer, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-
-
-Duration: 09-01-2020 to 09-10-2020
-
-#### Sprint 1
-##### Completed Tasks:
-1. Ability to send message to everyone 
-2. Login functionality 
-3. Send messages to indiviuals
-4. Read messages that have been sent to you
-
-Duration: 09-11-2020 to 10-01-2020
-
-
-##### Contributions: 
-
-1.  Jacob Scheetz, 4 hours, contributed in README, class code updates, powerpoint slides 
-2.  Beth Hosek 2, 4 hours, contributed in README, class code updates, powerpoint slides 
-3.  Justen Stall, 4 hours, contributed in README, class code updates, powerpoint slides 
-4.  Dena Schaeffer, 4 hours, contributed in README, class code updates, powerpoint slides 
-
-#### Sprint 2
-##### Completed Tasks:
-1. User typing notifications
-2. View list of active users
-3. Logout functionality
-4. Database implementation
-5. User registration
-6. Group chat implementation
-
-Duration: 10-02-2020 to 10-29-2020
-
-##### Contributions: 
-
-1.  Jacob Scheetz, 8 hours, contributed in README, login and register, powerpoint slides 
-2.  Beth Hosek 2, 8 hours, contributed in README, logout and use case diagrams, powerpoint slides 
-3.  Justen Stall, 8 hours, contributed in README, authentication and separated chat windows, powerpoint slides 
-4.  Dena Schaeffer, 8 hours, contributed in README, group messaging and use case diagrams, powerpoint slides 
-
-#### Sprint 3
-##### Completed Tasks:
-1. Store chat messages in database
-2. Encrypt passwords
-3. Users can view the message history
-4. Secure against web attacks
-5. Users can send URLs
-6. Filter language
-
-##### Contributions: 
-
-1.  Jacob Scheetz, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-2.  Beth Hosek 2, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-3.  Justen Stall, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-4.  Dena Schaeffer, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-
-
-##### Sprint Retrospective:
-#### Sprint 2: ###
-* There were no major issues with the code
-* The regular meetings helped us with time management
-* Dividing the tasks among members helped improve efficiency
-
-| Good     |   Could have been better    |  How to improve?  |
-|----------|:---------------------------:|------------------:|
-|   No issues with the code      |    Deployment to Heroku resulted in bugs      |   Work on bug fixes throughout           |
-
-#### Sprint 1: ###
-* We felt that working on the information on a regular basis as it was being discussed in class helped improve our understnafding of what we were developing
-* We also felt that dividing tasks between the team members prior to working on things was most efficient in accomplishing tasks and heightening responsibility
-* Lastly we felt that having regular meetings together gave us the opportunity to help each other out in areas that we may have been struggling or needed assistance
-
-| Good     |   Could have been better    |  How to improve?  |
-|----------|:---------------------------:|------------------:|
-|   Great teamwork   |  We could have gone to office hours more   |     We can add more use cases to improve UX  |
-
-
-## User guide/Demo
-
-Write as a demo with screenshots and as a guide for users to use your system.
+## Evaluation
 
 * Users can toggle between light mode: 
 
@@ -791,3 +640,106 @@ Write as a demo with screenshots and as a guide for users to use your system.
 
 ![chat](logout.png)
 
+* Users can view the list of active users
+* Store chat messages in database
+* Encrypt passwords
+* Users can view the message history
+* Secure against web attacks
+* Users can send clickable URLs
+* Filter language
+
+### Progress Report
+
+![Sprint 0 timeline](ganttchart.png)
+
+#### Sprint 0
+##### Completed Tasks:
+1. Use cases defined
+2. Use case diagram made
+3. Gantt chart created in Trello
+
+##### Contributions: 
+
+1.  Jacob Scheetz, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+2.  Beth Hosek 2, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+3.  Justen Stall, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+4.  Dena Schaeffer, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
+
+Duration: 09-01-2020 to 09-10-2020
+
+#### Sprint 1
+##### Completed Tasks:
+1. Ability to send message to everyone 
+2. Login functionality 
+3. Send messages to indiviuals
+4. Read messages that have been sent to you
+
+Duration: 09-11-2020 to 10-01-2020
+
+##### Contributions: 
+
+1.  Jacob Scheetz, 4 hours, contributed in README, class code updates, powerpoint slides 
+2.  Beth Hosek 2, 4 hours, contributed in README, class code updates, powerpoint slides 
+3.  Justen Stall, 4 hours, contributed in README, class code updates, powerpoint slides 
+4.  Dena Schaeffer, 4 hours, contributed in README, class code updates, powerpoint slides 
+##### Sprint Retrospective:
+
+* We felt that working on the information on a regular basis as it was being discussed in class helped improve our understnafding of what we were developing
+* We also felt that dividing tasks between the team members prior to working on things was most efficient in accomplishing tasks and heightening responsibility
+* Lastly we felt that having regular meetings together gave us the opportunity to help each other out in areas that we may have been struggling or needed assistance
+
+| Good     |   Could have been better    |  How to improve?  |
+|----------|:---------------------------:|------------------:|
+|   Great teamwork   |  We could have gone to office hours more   |     We can add more use cases to improve UX  |
+
+#### Sprint 2
+##### Completed Tasks:
+1. User typing notifications
+2. View list of active users
+3. Logout functionality
+4. Database implementation
+5. User registration
+6. Group chat implementation
+
+Duration: 10-02-2020 to 10-29-2020
+
+##### Contributions: 
+
+1.  Jacob Scheetz, 8 hours, contributed in README, login and register, powerpoint slides 
+2.  Beth Hosek 2, 8 hours, contributed in README, logout and use case diagrams, powerpoint slides 
+3.  Justen Stall, 8 hours, contributed in README, authentication and separated chat windows, powerpoint slides 
+4.  Dena Schaeffer, 8 hours, contributed in README, group messaging and use case diagrams, powerpoint slides 
+##### Sprint Retrospective:
+* There were no major issues with the code
+* The regular meetings helped us with time management
+* Dividing the tasks among members helped improve efficiency
+
+| Good     |   Could have been better    |  How to improve?  |
+|----------|:---------------------------:|------------------:|
+|   No issues with the code      |    Deployment to Heroku resulted in bugs      |   Work on bug fixes throughout           |
+
+#### Sprint 3
+##### Completed Tasks:
+1. Store chat messages in database
+2. Encrypt passwords
+3. Users can view the message history
+4. Secure against web attacks
+5. Users can send clickable URLs
+6. Filter language
+
+Duration: 10-30-2020 to 11-30-2020
+
+##### Contributions: 
+
+1.  Jacob Scheetz, 24 hours, contributed in use case, powerpoint, Trello, and use case diagram creation and implementation
+2.  Beth Hosek 2, 24 hours, contributed in use case, powerpoint, Trello, and use case diagram creation and implementation
+3.  Justen Stall, 24 hours, contributed in use case, powerpoint, Trello, and use case diagram creation and implementation
+4.  Dena Schaeffer, 24 hours, contributed in use case, powerpoint, Trello, and use case diagram creation and implementation
+
+##### Sprint Retrospective:
+* We focused on improving the design
+* We met more frequently to work on the application
+
+| Good     |   Could have been better    |  How to improve?  |
+|----------|:---------------------------:|------------------:|
+|   More frequent meetings to implement use cases      |    Deploying to Heroku      |   We could have worked on the bugs as we discovered them, rather than adding it to a bug list           |
