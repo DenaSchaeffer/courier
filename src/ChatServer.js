@@ -196,10 +196,10 @@ socketio.on("connection", (socketclient) => {
         newMessage = chatmessage;
 
         var swear3 = /ass|pee/gi;
-        var swear4 = /fuck|shit|damn|crap|piss|poop|hell|cunt/gi;
+        var swear4 = /fuck|shit|damn|crap|piss|poop|hell |cunt/gi;
         var swear5 = /bitch/gi;
         var swear6 = /Justin/gi;
-        var allSwears = ["ass", "fuck", "shit", "bitch", "damn", "crap", "piss", "poop", "pee", "hell", "Justin", "cunt"];
+        var allSwears = ["ass", "fuck", "shit", "bitch", "damn", "crap", "piss", "poop", "pee", "hell ", "Justin", "cunt"];
 
         for(x = 0; x <allSwears.length; x++)
         {
