@@ -208,7 +208,7 @@ socketio.on("connection", (socketclient) => {
                 newMessage = newMessage.replace(swear3, "***");
                 newMessage = newMessage.replace(swear4, "****");
                 newMessage = newMessage.replace(swear5, "*****");
-                newMessage = newMessage.replace(swear6, "******");
+                newMessage = newMessage.replace(swear6, "******"); 
 
                 socketclient.emit("swear");
 

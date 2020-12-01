@@ -8,6 +8,10 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <link rel="icon" 
+      type="image/png" 
+      href="/assets/logo.png">
 </head>
 
 <body style="height: 100vh;">
@@ -215,6 +219,7 @@
             var button = document.getElementById('dark-mode');
             var navbar = document.getElementById('navbar');
             var userList = document.getElementById("userList");
+            var messageForm = document.getElementById("messageForm");
             var messages = document.querySelectorAll(".message-text");
 
             if (body.style.backgroundColor === "black") {
@@ -224,6 +229,8 @@
                 navbar.classList.remove('navbar-dark');
                 navbar.classList.add('bg-light');
                 navbar.classList.add('navbar-light');
+                messageForm.classList.remove('bg-dark');
+                messageForm.classList.add('bg-light');
                 userList.style.color = 'rgb(33, 37, 41)';
                 messages.forEach(message => {
                     message.classList.add('bg-light');
@@ -237,6 +244,8 @@
                 navbar.classList.remove('navbar-light');
                 navbar.classList.add('bg-dark');
                 navbar.classList.add('navbar-dark');
+                messageForm.classList.remove('bg-light');
+                messageForm.classList.add('bg-dark');
                 userList.style.color = 'rgb(33, 37, 41)';
                 messages.forEach(message => {
                     message.classList.remove('bg-light');
@@ -431,12 +440,12 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand pl-3" href="#">
-            <!-- <img src="/docs/4.0/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt=""> -->
-            Courier
+        <a class="navbar-brand" href="#">
+            <img src="/assets/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+            <span class="pl-3">Courier</span>
         </a>
         <a class="nav-item nav-link disabled">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob
-            Scheetz in CPS490</a>
+            Scheetz in CPS490 Fall 2020</a>
         <span class="flex-grow-1"></span>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
