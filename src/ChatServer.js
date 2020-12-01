@@ -191,33 +191,34 @@ socketio.on("connection", (socketclient) => {
         console.log(logmsg);
     });
 
-    function filterMessage(chatmessage)
-{
-    //filter out all swearwords
-    newMessage = chatmessage;
+    function filterMessage(chatmessage) {
+        //filter out all swearwords
+        newMessage = chatmessage;
 
-    var swear3 = /ass|pee/gi;
-    var swear4 = /fuck|shit|damn|crap|piss|poop/gi;
-    var swear5 = /bitch/gi;
-    var allSwears = ["ass", "fuck", "shit", "bitch", "damn", "crap", "piss", "poop", "pee"];
+        var swear3 = /ass|pee/gi;
+        var swear4 = /fuck|shit|damn|crap|piss|poop|hell|cunt/gi;
+        var swear5 = /bitch/gi;
+        var swear6 = /Justin/gi;
+        var allSwears = ["ass", "fuck", "shit", "bitch", "damn", "crap", "piss", "poop", "pee", "hell", "Justin", "cunt"];
 
-    for(x = 0; x <allSwears.length; x++)
-    {
-        if(newMessage.includes(allSwears[x]))
+        for(x = 0; x <allSwears.length; x++)
         {
-            newMessage = newMessage.replace(swear3, "***");
-            newMessage = newMessage.replace(swear4, "****");
-            newMessage = newMessage.replace(swear3, "*****");
+            if(newMessage.includes(allSwears[x]))
+            {
+                newMessage = newMessage.replace(swear3, "***");
+                newMessage = newMessage.replace(swear4, "****");
+                newMessage = newMessage.replace(swear5, "*****");
+                newMessage = newMessage.replace(swear6, "******");
 
-            socketclient.emit("swear");
+                socketclient.emit("swear");
 
-            return newMessage;
+                return newMessage;
+            }
+            
         }
-        
-    }
-    return newMessage;
+        return newMessage;
 
-}
+    }
 });
 
 
