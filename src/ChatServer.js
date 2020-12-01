@@ -159,7 +159,7 @@ socketio.on("connection", (socketclient) => {
             timestamp: timestamp
         }
         console.log(message);
-        SendToAuthenticatedClient(socketclient, "chat", chatmessage);
+        SendToAuthenticatedClient(socketclient, "groupchat", message);
         // socketio.to(message.groupName).emit("chat", chatmessage);
     })
 
@@ -170,9 +170,19 @@ socketio.on("connection", (socketclient) => {
 
     socketclient.on("creategroup", (groupName, selections) => {
         console.log("users being added to group:", selections);
-        selections.forEach(element => {
-            socketio.sockets.connected[element].join(groupName);
+        // console.log(socketio.sockets.connected);
+        selections.forEach(selection => {
+            for(var socket in socketio.sockets.connected) {
+                if(socket.id === selection) {
+                    socket.join(groupName);
+                }
+            }
+            socketio.sockets.connected[selection].join(groupName);
         });
+        // var roomMembers = socketio.clients(groupName);
+        // roomMembers.forEach(client => {
+        //     console.log('Room member: ' + client.username);
+        // })
         groups.push(groupName);
         socketio.to(groupName).emit("newgroup", groupName);
         console.log(groups);
@@ -266,6 +276,10 @@ function SendToAuthenticatedClient(sendersocket, type, data) {
                 if (socketclient.username === data.receiver || socketclient.username === data.sender) {
                     socketclient.emit(type, data);
                 }
+            } else if (type === "groupchat") {
+                // messengerdb.storePublicChat(data);
+                // console.log(data);
+                socketio.to(data.receiver).emit("chat", data);
             } else {
                 socketclient.emit(type, data);
             }
