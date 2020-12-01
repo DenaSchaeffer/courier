@@ -18,7 +18,7 @@ Instructor: Dr. Phu Phung
 ## Team 8
 
 1.  Jacob Scheetz, scheetzj2@udayton.edu 101537208
-2.  Beth Hosek, hoseke1@udayton.edu
+2.  Beth Hosek, hoseke1@udayton.edu 101516895
 3.  Justen Stall, stallj2@udayton.edu 101447307
 4.  Dena Schaeffer, backd1@udayton.edu 101483690
 
@@ -34,7 +34,7 @@ Source code repository (private access): <https://bitbucket.org/cps490f20-team8/
 
 | Date     |   Version     |  Description |
 |----------|:-------------:|-------------:|
-|11/30/2020|  0.4          | Sprint 3
+|11/30/2020|  1.0          | Sprint 3
 |10/28/2020|  0.3          | Sprint 2     |
 |09/30/2020|  0.2          | Sprint 1     |
 |09/10/2020|  0.1          | Added details|
@@ -610,31 +610,28 @@ We implemented the following use cases into our messenger application:
 
 ![register](screenshots/register1.png)
 
-* And users will be  directed to logon once registered:
+* And users will be directed to logon once registered:
 
 ![register](screenshots/reguister2.png)
 
 * Users can logon to the system with their username and password:
 
-![login](screenshots/userlogin.png)
+![login](screenshots/login1.png)
+![login](screenshots/login2.png)
 
-* Once logged in, the users can send messages in the chat and see who joins the chat:
+* Once logged in, the users can send messages in the public chat and see who joins the chat:
 
 ![chat](screenshots/beforesendpublic.png)
 ![chat](screenshots/aftersendpublic.png)
 
 * Users can see when someone is typing:
 
-![chat](screenshots/typing.png)
+![chat](screenshots/typingfinal.png)
 
-* Users can send a private chat via the selection of an active user:
+* Users can send and recieve a private chat via the selection of an active user:
 
-![private-send](screenshots/private.png)
-
-* Users can receive a private chat: 
-
-![receive-private](screenshots/beforeprivatesend.png)
-![receive-private](screenshots/afterprivatesend.png)
+![receive-private](screenshots/beforesendprivate.png)
+![receive-private](screenshots/aftersendprivate.png)
 
 * Users can create a group chat:
 
@@ -643,13 +640,16 @@ We implemented the following use cases into our messenger application:
 
 * Users can logout (brings user back to login screen and notifies active users): 
 
-![chat](screenshots/logout.png)
+![chat](screenshots/logout1.png)
+![chat](screenshots/logout2.png)
 
 * Users can view the list of active users
 
 ![users](screenshots/aftersendpublic.png)
 
 * Store chat messages in database
+
+![messages](screenshots/storemessages.png)
 
 * Passwords of users are encrpyted in the database
 ![hash](screenshots/register4.png)
