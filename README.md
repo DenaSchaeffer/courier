@@ -16,7 +16,7 @@ Instructor: Dr. Phu Phung
 
 ## Team 8
 
-1.  Jacob Scheetz, scheetzj2@udayton.edu
+1.  Jacob Scheetz, scheetzj2@udayton.edu 101537208
 2.  Beth Hosek, hoseke1@udayton.edu
 3.  Justen Stall, stallj2@udayton.edu 101447307
 4.  Dena Schaeffer, backd1@udayton.edu 101483690
