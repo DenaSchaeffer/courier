@@ -1,0 +1,94 @@
+#navbar {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 100;
+}
+
+body {
+	padding-top: 56px;
+	box-sizing: border-box;
+}
+
+#chatUI {
+	height: 100%;
+	width: 100%;
+}
+
+#sidebar {
+	position: relative;
+	top: 0px;
+	box-sizing: border-box;
+}
+
+#messageForm {
+	box-sizing: border-box;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+#messages {
+	overflow-y: scroll;
+	height: 100%;
+	position: absolute;
+	padding-bottom: 72px;
+	box-sizing: border-box;
+	/* bottom: 72px; */
+}
+
+.message {
+	justify-content: flex-start;
+	min-height: 32px;
+	padding-bottom: 5px;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.sender {
+	padding-right: 8px;
+}
+
+.message-text {
+	/* box-sizing: border-box; */
+	padding: 6px 12px;
+	border-radius: 18px 18px 18px 0;
+	/* color: white; */
+	vertical-align: center;
+}
+
+.timestamp {
+	justify-self: end;
+	text-align: right;
+	padding-left: 8px;
+	/* flex-grow: 1; */
+}
+
+.spacer {
+	/* width: 500px; */
+	flex-grow: 1;
+}
+
+.sent-message {
+	justify-content: flex-start;
+	min-height: 32px;
+	padding-bottom: 5px;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.sent-message-text {
+	color: white;
+	border-radius: 18px 18px 0 18px;
+	padding: 6px 12px;
+	vertical-align: center;
+}
+
+.sent-message-text .message-link {
+	color: white;
+}
+
+.notice {
+	text-align: center;
+}

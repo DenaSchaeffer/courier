@@ -1,11 +1,11 @@
 {
-  "name": "src",
+  "name": "cps490-project-team8",
   "version": "1.0.0",
   "description": "Messenger Node.js App for CPS490 - Team 8",
   "main": "ChatServer.js",
   "scripts": {
-    "test": "node ChatServer.js",
-    "start": "node ChatServer.js"
+    "test": "nodemon src/ChatServer.js -e html,css",
+    "start": "node src/ChatServer.js"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,10 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/cps490f20-team8/cps490-project-team8#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "mongodb": "^3.6.2",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "xss": "^1.0.8"
   }
 }
