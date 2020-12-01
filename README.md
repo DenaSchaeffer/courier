@@ -11,7 +11,7 @@ Instructor: Dr. Phu Phung
 
 
 ## Courier: The Messenger Application
-![Logo](logo.png)
+![Logo](https://drive.google.com/file/d/11pEIb4L1Sbrh9RrP4Tov8oK_NqWKknfl/view?usp=sharing)
 
 <https://cps490-messenger.herokuapp.com>
 
@@ -45,7 +45,7 @@ Source code repository (private access): <https://bitbucket.org/cps490f20-team8/
 
 The messenger application is a live-chat application that communicates between the client and chat server (web application in Node.js). 
 
-![High Level Architecture](screenshots/architecture.png)
+![High Level Architecture](https://drive.google.com/file/d/14oHt-ebwc5TA5wRE1OthhI9Up5nGadEq/view?usp=sharing)
 
 ## System Analysis
 
@@ -139,7 +139,7 @@ The messenger application is a live-chat application that communicates between t
 
 
 ## System Design
-![Sequence_Diagram](system-sequence-diagram.png)
+![Sequence_Diagram](https://drive.google.com/file/d/1BDkIEPDMxbYlgyJFT0FsuULHJmzDfmIh/view?usp=sharing)
 
 * Our system is designed such that a user must login before they are able to access the application.
 * Once logged in, the user is able to send messages to everyone, send messages privately, or view the messages they have been sent.
@@ -595,7 +595,7 @@ We implemented the following use cases into our messenger application:
 
 * Our team decided to deploy the application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code, and have the ability to create a dynamic web application.
 * URL: <https://cps490-messenger.herokuapp.com/>
-* Latest Commit: <https://bitbucket.org/cps490f20-team8/cps490-project-team8/commits/71434f1c18c05d3290148026511c5c6a3d378bfe> UPDATE LATER
+* Latest Commit: <https://bitbucket.org/cps490f20-team8/cps490-project-team8/commits/0a29af7621a2645acf60d97357dc5b78205e7bd8>
 
 ## Evaluation
 
