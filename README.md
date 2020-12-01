@@ -72,7 +72,7 @@ The messenger application is a live-chat application that communicates between t
 
 ## Use cases
 
-![Use Case Diagram](screenshots/imaage.png)
+![Use Case Diagram](screenshots/image.png)
 
 #### Register an Account
  * Actor: Unregistered user
