@@ -1,5 +1,3 @@
-Latest Commit: <https://bitbucket.org/cps490f20-team8/cps490-project-team8/commits/71434f1c18c05d3290148026511c5c6a3d378bfe>
-
 University of Dayton
 
 Department of Computer Science
@@ -14,14 +12,14 @@ Instructor: Dr. Phu Phung
 
 ## Courier: The Messenger Application
 ![Logo](logo.png)
-
+https://cps490-messenger.herokuapp.com
 
 ## Team 8
 
-1.  Jacob Scheetz, scheetzj2@udayton.edu
+1.  Jacob Scheetz, scheetzj2@udayton.edu 101537208
 2.  Beth Hosek, hoseke1@udayton.edu
 3.  Justen Stall, stallj2@udayton.edu 101447307
-4.  Dena Schaeffer, backd1@udayton.edu
+4.  Dena Schaeffer, backd1@udayton.edu 101483690
 
 
 ## Project Management Information
@@ -46,27 +44,36 @@ Source code repository (private access): <https://bitbucket.org/cps490f20-team8/
 
 The messenger application is a live-chat application that communicates between the client and chat server (web application in Node.js). 
 
-![High Level Architecture](architecture.png)
+![High Level Architecture](screenshots/architecture.png)
 
 ## System Analysis
 
-* In the current state of the application, sprint 2, we are able to deploy our application to Heroku so that the hosting is taken care of. 
+* In the current state of the application, sprint 3, we are able to deploy our application to Heroku so that the hosting is taken care of. 
 * With this, the application does not have to be spun up locally to interact with the application everytime. This allows users to access the app who are not on the local machine.
 
 ### User Requirements
 
-- Users can type text and send a single receiver
+- Users can type text and send to active users list
+- Users can type text and send to a single receiver
 - Users can type text and send to a group
+- Users can create a group
 - Users can register to the system
 - Users can login with a registered account
 - Users should receive the messages sent to them in real time
 - Users can view the message history
-- Users can see if the sent messages have been read
+- Store chat messages in database
+- Encrypt passwords
+- Users can view the message history
+- Secure against web attacks
+- Users can send clickable URLs
+- Filter language
+- Users can logout
+- Users can toggle between light mode and dark mode
 
 
-### Use cases
+## Use cases
 
-![Use Case Diagram](usecase.png)
+![Use Case Diagram](screenshots/image.png)
 
 #### Register an Account
  * Actor: Unregistered user
@@ -131,199 +138,535 @@ The messenger application is a live-chat application that communicates between t
 
 
 ## System Design
+![Sequence_Diagram](system-sequence-diagram.png)
 
 * Our system is designed such that a user must login before they are able to access the application.
 * Once logged in, the user is able to send messages to everyone, send messages privately, or view the messages they have been sent.
 
-### Use-Case Realization
-
-* The functionality that we as a team feel is necessary to implement next is the ability to show a list of active users within the system. We feel that this will help improve the practicality of our application
-
-### Database 
-
-* MongoDB is the database hosting the data for our app. It stores the registered user data into a JSON file that is later parsed through upon login.
-* EXPAND HERE
+### Database
+* MongoDB hosted the data for our messaging application. It stores the registered user data, consisting of their username and hased passwords. This database also stores the messages sent in general and private messages. This data is stores in JSON files that are later parsed through upon login or retrieval of chat history. 
 
 ### User Interface
 
 * Our first distinctive UI element that we have implemented into our system is a Dark Mode toggle button. 
 * This implementation allows the end user to click a button to change the interface color depending on preference.
-* Our second implementation is having read receipts on messages a user has sent.
 * Our third implementation is showing when a user is typing to a group. 
+* Users can toggle between different chat rooms
+* A simple and familiar chat design was implemented with chat bubbles. The chat bubbles are separated by having the sending user's messages to the right side of the site, and other user's messages recieved on the left side. 
+* There are notifications that alert of a user logging in and out that are centered on the screen. 
 
 ## Implementation
-* We implemented the following use cases into our messenger application:
-1. Users need to login with username/password. Invalid username/password cannot be logged in
-2. Anyone can register for a new account to log in
-3. Only logged-in users can send/receive messages (any)
-4. Logged-in users can logout
-5. Logged-in users can create a group chat (more than 2 members)
-6. Logged-in users in a group chat can send/receive messages from the group
-7. Seperated chat window for group chat
-8. Read receipts
-9. User typing notification
-* Similar to sprint 1, the implementations were deployed on Heroku, furthering our development of the ChatServer.js file in node and updating the home page in HTML.
-* The new methods implemented in ChatServer.js are in the code snippets below:
+We implemented the following use cases into our messenger application:
 
+* Users need to login with username/password. Invalid username/password cannot be logged in
+```JavaScript
+  
+  		socketclient.on("login", async (username, password) => {
+        	console.log("Debug>got username=" + username + " password=" + password);
+        	var checklogin = await DataLayer.checklogin(username, password);
+        	socketclient.username = username;
+        	if (checklogin) {
+            	users.push({
+                	id: socketclient.id,
+                	username: username
+            	});
+            	socketclient.authenticated = true;
+            	socketclient.emit("authenticated", username);
+            	socketclient.username = username;
+            	var welcomemessage = username + " has joined the chat system!";
+            	console.log(welcomemessage);
+            	// socketio.sockets.emit("welcome", welcomemessage);
+            	socketio.emit("newuser", users);
+            	SendToAuthenticatedClient(socketclient, "welcome", welcomemessage);
+            	console.log(users);
 ```
-socketclient.on("register", (username, password) => {
-    if (validateUsername(username) && validatePassword(password)) {
-        DataLayer.addUser(username, password, (result) => {
-            socketclient.emit("registration", result);
-        });
-    } else {
-        var result = "invalid login"
-        socketclient.emit("registration", result);
-    }
-});
+```HTML
+	function login() {
+         var username = document.getElementById('username').value;
+         var password = document.getElementById('password').value;
 
-socketclient.on("logout", () => {
-    users = users.filter(user => user.id !== socketclient.id);
-
-    var logoutmessage = {
-        message: socketclient.username + " has disconnected from the chat",
-        sender: 'all'
-    }
-    // emit a chat to send logout message
-    socketio.sockets.emit("chat", logoutmessage);
-
-    // emit newuser to update active user list
-    socketio.sockets.emit("newuser", users);
-
-    var logmsg = "Debug:> logged out";
-    console.log(logmsg);
-
-    socketclient.disconnect();
-    // socketclient.id = null;
-});
-
-socketclient.on("groupchat", (message) => {
-    if (!socketclient.authenticated) {
-        console.log("Unauthenticated client sent a chat. Supress!");
-        return;
-    }
-    // var stringmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
-    var chatmessage = {
-        message: "(" + message.groupName + ") " + socketclient.username + " says: " + message.message,
-        sender: message.groupName
-    }
-    console.log(chatmessage);
-    socketio.to(message.groupName).emit("chat", chatmessage);
-})
-
-socketclient.on("typing", () => {
-    var typingmessage = socketclient.username + " is typing...";
-    socketclient.broadcast.emit("typing", typingmessage);
-});
-
-socketclient.on("creategroup", (groupName, selections) => {
-    console.log("users being added to group:", selections);
-    selections.forEach(element => {
-        socketio.sockets.connected[element].join(groupName);
-    });
-    groups.push(groupName);
-    socketio.to(groupName).emit("newgroup", groupName);
-    console.log(groups);
-});
-});
-
-socketio.on('disconnect', (socketclient) => {
-    users = users.filter(user => user.id !== socketclient.id);
-
-    var logoutmessage = {
-        message: socketclient.username + " has disconnected from the chat",
-        sender: 'all'
-    }
-    // emit a chat to send logout message
-    socketio.sockets.emit("chat", logoutmessage);
-
-    // emit newuser to update active user list
-    socketio.sockets.emit("newuser", users);
-
-    var logmsg = "Debug:> logged out";
-    console.log(logmsg);
-});
-
-function validateUsername(username) {
-    return (username && username.length > 4);
-}
-
-function validatePassword(password) {
-    //require at least one digit, one upper and lower case letter
-    return /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(password);
-}
-
-
-```
-
-### Sprint 1
-
-* During this sprint, we were mainly focused on the funtionality of our messenger application. 
-* We implemented the following the uses: The ability to login to the system, the ability to send messages to groups, the ability to send a message to a single user, and the ability to toggle dark and light mode on the interface. 
-* This implementations were done by deploying the application on Heroku, furthering our development of the ChatServer.js file in node and updating the home page in HTML. 
-* the updates to ChatServer.js are in the code snippets below:
-``` 
-function SendToAuthenticatedClient(sendersocket, type, data){
-    var sockets = socketio.sockets.sockets;
-    for(var socketId in sockets){
-        var socketclient=sockets[socketId];
-        if(socketclient.authenticated){
-            socketclient.emit(type,data);
-            var logmsg= "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
-            console.log(logmsg);
+         socketio.on("welcome", (welcomemessage) => {
+             var timestamp = Date.now();
+             messages.push({
+                 message: welcomemessage,
+                 receiver: 'all',
+                 sender: 'none',
+                 timestamp: timestamp
+             });
+             displayMessages();
+            });
+         socketio.emit("login", username, password);
         }
-    }
-
-}
 ```
+* Anyone can register for a new account to log in
+```JavaScript
+    socketclient.on("register", (username, password) => {
+        if (validateUsername(username) && validatePassword(password)) {
+            DataLayer.addUser(username, password, (result) => {
+                var data = xssfilter(result);
+                socketclient.emit("registration", data);
+            });
+        } else {
+            var result = "invalid login"
+            var data = xssfilter(result);
+            socketclient.emit("registration", data);
+        }
+    });
+	
+	function validateUsername(username) {
+   		 return (username && username.length > 4);
+	}
 
+	function validatePassword(password) {
+   		 //require at least one digit, one upper and lower case letter
+  		 return /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(password);
+	}
 ```
-socketio.on("connection", function (socketclient) {
-    console.log("A new Socket.IO client is connected. ID= " + socketclient.id)
-    socketclient.on("login", (username,password) => {
-        socketclient.username = username;
-        console.log("Debug>got username=" + username + " password="+ password);
-        if(DataLayer.checklogin(username,password)){
-            socketclient.authenticated=true;
-            socketclient.emit("authenticated");
-            var welcomemessage = username + " has joined the chat system!";
-            console.log(welcomemessage);
-            //socketio.sockets.emit("welcome", welcomemessage);
-            SendToAuthenticatedClient(socketclient, "Welcome", welcomemessage);
-          }
-    }
+```html
+ 	function register() {
+            var username = document.getElementById('newusername').value;
+            var password = document.getElementById('newpassword').value;
 
-        
+            socketio.on("welcome", (welcomemessage) => {
+                document.getElementById('messages').innerHTML += sanitizeHTML(welcomemessage) + "<br>";
+            });
+
+            socketio.emit("register", username, password);
+        }
+```
+* Only logged-in users can send/receive messages (any)
+```javascript
+
     socketclient.on("chat", (message) => {
-        if(!socketclient.authenticated)
-        {
+        if (!socketclient.authenticated) {
             console.log("Unauthenticated client sent a chat. Supress!");
             return;
         }
-        var chatmessage = socketclient.username + " says: " + message;
-        console.log(chatmessage);
-        socketio.sockets.emit("chat", chatmessage);
+        var newMessage = filterMessage(message);
+        var chatmessage = message;
+        var timestamp = Date.now();
+        var chatmessage = {
+            message: newMessage,
+            sender: socketclient.username,
+            receiver: 'all',
+            timestamp: timestamp
         }
+        console.log(chatmessage);
+        // socketio.sockets.emit("chat", chatmessage);
+        SendToAuthenticatedClient(socketclient, "chat", chatmessage);
     });
+```
+```html
+        function sendmessage() {
+ 
+            if (recipient === 'all') {
+                socketio.emit("chat", document.getElementById('yourmessage').value);
+            } else if (groupRecipient) {
+                console.log('sending group chat');
+                socketio.emit("groupchat", {
+                    message: document.getElementById('yourmessage').value,
+                    groupName: recipient
+                });
+            } else {
+                console.log(recipient)
+                var receivingUser = users.find(user => user.username === recipient);
+                console.log(receivingUser)
+                console.log('sending private chat');
+                socketio.emit("privatechat", {
+                    message: document.getElementById('yourmessage').value,
+                    socketId: receivingUser.id,
+                    receiver: recipient
+                });
+                // console.log('private chat emitted');
+            }
+        }
+```
+* Logged-in users can logout
+```javascript
+    socketclient.on("logout", () => {
+        users = users.filter(user => user.id !== socketclient.id);
+
+        var logoutmessage = {
+            message: socketclient.username + " has disconnected from the chat",
+            sender: 'all'
+        }
+        // emit a chat to send logout message
+        socketio.sockets.emit("chat", logoutmessage);
+
+        // emit newuser to update active user list
+        socketio.sockets.emit("newuser", users);
+
+        var logmsg = "Debug:> logged out";
+        console.log(logmsg);
+
+        socketclient.disconnect();
+        // socketclient.id = null;
+    });
+```
+```html
+        function logout() {
+            socketio.emit("logout");
+            hideChatScreen();
+            showLoginScreen();
+        }
+```
+* Logged-in users can create a group chat (more than 2 members)
+```javascript
+    socketclient.on("creategroup", (groupName, selections) => {
+        console.log("users being added to group:", selections);
+        selections.forEach(element => {
+            socketio.sockets.connected[element].join(groupName);
+        });
+        groups.push(groupName);
+        socketio.to(groupName).emit("newgroup", groupName);
+        console.log(groups);
+    });
+```
+```html
+        function createGroup() {
+            var userSelect = document.getElementById('userSelect');
+            var groupName = document.getElementById('groupName').value;
+            var selections = [];
+            selections = Array.from(userSelect.selectedOptions).map(o => o.value)
+            console.log(selections);
+            socketio.emit("creategroup", groupName, selections);
+        }
+```
+* Logged-in users in a group chat can send/receive messages from the group
+```javascript
+        function sendmessage() {
+ 
+            if (recipient === 'all') {
+                socketio.emit("chat", document.getElementById('yourmessage').value);
+            } else if (groupRecipient) {
+                console.log('sending group chat');
+                socketio.emit("groupchat", {
+                    message: document.getElementById('yourmessage').value,
+                    groupName: recipient
+                });
+            } else {
+                console.log(recipient)
+                var receivingUser = users.find(user => user.username === recipient);
+                console.log(receivingUser)
+                console.log('sending private chat');
+                socketio.emit("privatechat", {
+                    message: document.getElementById('yourmessage').value,
+                    socketId: receivingUser.id,
+                    receiver: recipient
+                });
+                // console.log('private chat emitted');
+            }
+        }
+```
+```html
+    socketclient.on("groupchat", (message) => {
+        if (!socketclient.authenticated) {
+            console.log("Unauthenticated client sent a chat. Supress!");
+            return;
+        }
+        // var stringmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
+        var newMessage = filterMessage(message);
+        var chatmessage = {
+            message: "(" + message.groupName + ") " + socketclient.username + " says: " + newMessage,
+            sender: message.groupName
+        }
+        console.log(chatmessage);
+        socketio.to(message.groupName).emit("chat", chatmessage);
+    })
+```
+* Seperated chat window for group chat
+```html
+        function createGroup() {
+            var userSelect = document.getElementById('userSelect');
+            var groupName = document.getElementById('groupName').value;
+            var selections = []; //making a new array allows for a group message in a new window -- found in the user list
+            selections = Array.from(userSelect.selectedOptions).map(o => o.value)
+            console.log(selections);
+            socketio.emit("creategroup", groupName, selections);
+        }
+```
+* User typing notification
+```javascript
+    socketclient.on("typing", () => {
+        var typingmessage = socketclient.username + " is typing...";
+        socketclient.broadcast.emit("typing", typingmessage);
+    });
+```
+```html
+        function typing() {
+            console.log("typing");
+            socketio.emit("typing")
+        }
+```
+* Dark Mode
+```html
+        function toggleDarkMode() {
+            var body = document.body;
+            var button = document.getElementById('dark-mode');
+            var navbar = document.getElementById('navbar');
+            var userList = document.getElementById("userList");
+            var messages = document.querySelectorAll(".message-text");
+
+            if (body.style.backgroundColor === "black") {
+                body.style.backgroundColor = "white";
+                body.style.color = "black";
+                navbar.classList.remove('bg-dark');
+                navbar.classList.remove('navbar-dark');
+                navbar.classList.add('bg-light');
+                navbar.classList.add('navbar-light');
+                userList.style.color = 'rgb(33, 37, 41)';
+                messages.forEach(message => {
+                    message.classList.add('bg-light');
+                    message.classList.remove('bg-dark');
+                });
+                button.innerHTML = "Dark Mode";
+            } else {
+                body.style.backgroundColor = "black";
+                body.style.color = "white";
+                navbar.classList.remove('bg-light');
+                navbar.classList.remove('navbar-light');
+                navbar.classList.add('bg-dark');
+                navbar.classList.add('navbar-dark');
+                userList.style.color = 'rgb(33, 37, 41)';
+                messages.forEach(message => {
+                    message.classList.remove('bg-light');
+                    message.classList.add('bg-dark');
+                });
+                button.innerHTML = "Light Mode"
+            }
+        }
+```
+* Send Clickable URLs
+```html
+        function urlify(text) {
+            var urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, function(url) {
+            return '<a class="message-link" target="_blank" href="' + url + '">' + url + '</a>';
+            })
+                // or alternatively
+                // return text.replace(urlRegex, '<a href="$1">$1</a>')
+        }
+```
+* Prevent XSS Attacks
+```javascript
+	function SendToAuthenticatedClient(sendersocket, type, data) {
+    	var sockets = socketio.sockets.sockets;
+    	for (var socketId in sockets) {
+        	var socketclient = sockets[socketId];
+       		 if (socketclient.authenticated) {
+          		  if (typeof data === 'object' && data !== null) {
+            		    for (let property in data) {
+              		      console.log('property:', data[property]);
+              		      data[property] = xssfilter(data[property]);
+              		      console.log('xss filtered:', data[property]);
+              		  }
+              		  data['timestamp'] = parseFloat(data['timestamp']);
+              		  console.log('new object:', data);
+         		   } else if (typeof data === 'string') {
+         		       data = xssfilter(data);
+         		   }
+        	    socketclient.emit(type, data);
+            	var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
+            	console.log(logmsg);
+            	if(type=="chat")
+                	messengerdb.storePublicChat(data);
+        	}
+    	}
+	}
+```
+* Filter language 
+```javascript
+    function filterMessage(chatmessage) {
+        //filter out all swearwords
+        newMessage = chatmessage;
+
+        var swear3 = /ass|pee/gi;
+        var swear4 = /fuck|shit|damn|crap|piss|poop|hell|cunt/gi;
+        var swear5 = /bitch/gi;
+        var swear6 = /Justin/gi;
+        var allSwears = ["ass", "fuck", "shit", "bitch", "damn", "crap", "piss", "poop", "pee", "hell", "Justin", "cunt"];
+
+        for(x = 0; x <allSwears.length; x++)
+        {
+            if(newMessage.includes(allSwears[x]))
+            {
+                newMessage = newMessage.replace(swear3, "***");
+                newMessage = newMessage.replace(swear4, "****");
+                newMessage = newMessage.replace(swear5, "*****");
+                newMessage = newMessage.replace(swear6, "******");
+
+                socketclient.emit("swear");
+
+                return newMessage;
+            }
+            
+        }
+        return newMessage;
+
+    }
+});
+```
+```javascript
+    socketio.on("swear", () => {
+        alert("Your message was filtered for foul language");
+    });
+
+```
+
+* Encrypt Passwords
+```javascript
+	const bcrypt = require("bcryptjs")
+	const checklogin = async (username, password) => {
+    	console.log("Debug>messengerdb.checklogin: " + username + "/" + password);
+    	var users = getDb().collection("users");
+    	var user = await users.findOne({ username: username});
+    	if (user != null && user.username == username) {
+        	//var hashedpassword = bcrypt.hashSync(password);
+        	console.log("Debug>messengerdb.checklogin-> user found:\n" + JSON.stringify(user));
+        	//console.log(hashedpassword);
+        	return bcrypt.compareSync(password, user.password);
+    	}
+    	return false
+	}
+	const addUser = (username, password, callback) => {
+    	console.log("Debug>messengerdb.addUser:" + username + "/" + password)
+    	var users = getDb().collection("users");
+    	users.findOne({ username: username }).then(user => {
+       		 if (user && user.username === username) {
+          		  console.log(`Debug>messengerdb.addUser: Username '${username}' exists!`);
+           		 callback("UserExist");
+       		 } else {
+           		 // input validation (password strength)
+           		 // callback("InvalidInput");
+           		 var hashedpassword = bcrypt.hashSync(password,10);
+           		 var newUser = { "username": username, "password": hashedpassword }
+          		  users.insertOne(newUser, (err, result) => {
+          		      if (err) {
+           		         console.log("Debug>messengerdb.addUser: error for adding '" + username + "':\n", err);
+            		     callback("Error");
+                	} else {
+                    	console.log("Debug>messengerdb.addUser: a new user added: \n", result.ops[0].username);
+                    	callback("Success");
+                	}
+            	});
+        	}
+    	});
+	}
+```
+* Active Users List
+```javascript
+	var users = [];
+	 	if (checklogin) {
+            users.push({
+                id: socketclient.id,
+                username: username
+            });
+	users = users.filter(user => user.id !== socketclient.id);
+
+```
+* Load Chat History
+
+```javascript
+	const storePublicChat = (message) => {
+    	//TODO: validate the data and print out debug info
+    	getDb().collection("public_chat").insertOne(message, function(err,doc){
+        	if (err != null) {
+            	console.log(err);
+        	} else {
+            	console.log("Debug: message is added:" + JSON.stringify(doc.ops));
+        	}
+   		});
+	}
+	const loadChatHistory = async (receiver, limits=100) => {
+    	//TODO: fix the find so that it can get by receiver and by all
+    	var private_chat_history = await getDb().collection("public_chat").find({receiver:receiver}).sort({timestamp:-1}).limit(limits).toArray();
+    	var public_chat_history = await getDb().collection("public_chat").find({receiver:"all"}).sort({timestamp:-1}).limit(limits).toArray();
+    	var appended_history = private_chat_history.concat(public_chat_history);
+    	//print debug info ex. using JSON.stringify(chat_history)
+    	if (appended_history && appended_history.length > 0) 
+        	return appended_history;
+    	//print debug info ex. using JSON.stringify(chat_history)
+	}
+	module.exports = { checklogin, addUser,storePublicChat, loadChatHistory }
 ```
 
 ### Deployment
 
-* Our team decided to deploy the application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code and have the ability to create a dynamic web application.
-* ELABORATE MORE
+* Our team decided to deploy the application onto Heroku so that we would be able to maintain version control, have a central point to collaborate on the code, and have the ability to create a dynamic web application.
 * URL: <https://cps490-messenger.herokuapp.com/>
+* Latest Commit: <https://bitbucket.org/cps490f20-team8/cps490-project-team8/commits/71434f1c18c05d3290148026511c5c6a3d378bfe> UPDATE LATER
 
-## Software Process Management
+## Evaluation
 
-Introduce how your team uses a software management process, e.g., Scrum, how your teamwork, collaborate.
+* Users can toggle between light mode: 
 
-Include the Trello board with product backlog and sprint cycles in an overview figure and also in detail description. _(Main focus of Sprint 0)_
+![light](screenshots/lightmodefinal.png)
+* Or dark mode:
 
-Also, include the Gantt chart reflects the timeline from the Trello board. _(Main focus of Sprint 0)_
+![dark](screenshots/darkmodefinal.png)
 
-![Sprint 0 timeline](ganttchart.png)
+* Users can register to the system:
 
-### Scrum process
+![register](screenshots/register1.png)
+
+* And users will be  directed to logon once registered:
+
+![register](screenshots/reguister2.png)
+
+* Users can logon to the system with their username and password:
+
+![login](screenshots/userlogin.png)
+
+* Once logged in, the users can send messages in the chat and see who joins the chat:
+
+![chat](screenshots/beforesendpublic.png)
+![chat](screenshots/aftersendpublic.png)
+
+* Users can see when someone is typing:
+
+![chat](screenshots/typing.png)
+
+* Users can send a private chat via the selection of an active user:
+
+![private-send](screenshots/private.png)
+
+* Users can receive a private chat: 
+
+![receive-private](screenshots/beforeprivatesend.png)
+![receive-private](screenshots/afterprivatesend.png)
+
+* Users can create a group chat:
+
+![chat](screenshots/creategroupnaming.png)
+![chat](screenshots/creategrouplist.png)
+
+* Users can logout (brings user back to login screen and notifies active users): 
+
+![chat](screenshots/logout.png)
+
+* Users can view the list of active users
+
+![users](screenshots/aftersendpublic.png)
+
+* Store chat messages in database
+
+* Passwords of users are encrpyted in the database
+![hash](screenshots/register4.png)
+
+* Users can view the message history
+* Secure against web attacks
+* Users can send clickable URLs
+
+* When users type foul language, they will be alerted and the message will be filtered
+
+![filter](screenshots/filter1.png)
+![filter](screenshots/filter2.png)
+![filter](screenshots/filter3.png)
+
+### Progress Report
+
+![Sprint 3 timeline](screenshots/trellocal.png)
+![Sprint 3 tasks](screenshots/trellolist.png)
 
 #### Sprint 0
 ##### Completed Tasks:
@@ -338,7 +681,6 @@ Also, include the Gantt chart reflects the timeline from the Trello board. _(Mai
 3.  Justen Stall, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
 4.  Dena Schaeffer, 4 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
 
-
 Duration: 09-01-2020 to 09-10-2020
 
 #### Sprint 1
@@ -350,13 +692,21 @@ Duration: 09-01-2020 to 09-10-2020
 
 Duration: 09-11-2020 to 10-01-2020
 
-
 ##### Contributions: 
 
 1.  Jacob Scheetz, 4 hours, contributed in README, class code updates, powerpoint slides 
 2.  Beth Hosek 2, 4 hours, contributed in README, class code updates, powerpoint slides 
 3.  Justen Stall, 4 hours, contributed in README, class code updates, powerpoint slides 
 4.  Dena Schaeffer, 4 hours, contributed in README, class code updates, powerpoint slides 
+##### Sprint Retrospective:
+
+* We felt that working on the information on a regular basis as it was being discussed in class helped improve our understnafding of what we were developing
+* We also felt that dividing tasks between the team members prior to working on things was most efficient in accomplishing tasks and heightening responsibility
+* Lastly we felt that having regular meetings together gave us the opportunity to help each other out in areas that we may have been struggling or needed assistance
+
+| Good     |   Could have been better    |  How to improve?  |
+|----------|:---------------------------:|------------------:|
+|   Great teamwork   |  We could have gone to office hours more   |     We can add more use cases to improve UX  |
 
 #### Sprint 2
 ##### Completed Tasks:
@@ -375,26 +725,7 @@ Duration: 10-02-2020 to 10-29-2020
 2.  Beth Hosek 2, 8 hours, contributed in README, logout and use case diagrams, powerpoint slides 
 3.  Justen Stall, 8 hours, contributed in README, authentication and separated chat windows, powerpoint slides 
 4.  Dena Schaeffer, 8 hours, contributed in README, group messaging and use case diagrams, powerpoint slides 
-
-#### Sprint 3
-##### Completed Tasks:
-1. Store chat messages in database
-2. Encrypt passwords
-3. Users can view the message history
-4. Secure against web attacks
-5. Users can send URLs
-6. Filter language
-
-##### Contributions: 
-
-1.  Jacob Scheetz, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-2.  Beth Hosek 2, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-3.  Justen Stall, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-4.  Dena Schaeffer, 18 hours, contributed in use case, powerpoint, Trello, and use case diagram creation 
-
-
 ##### Sprint Retrospective:
-#### Sprint 2: ###
 * There were no major issues with the code
 * The regular meetings helped us with time management
 * Dividing the tasks among members helped improve efficiency
@@ -403,61 +734,28 @@ Duration: 10-02-2020 to 10-29-2020
 |----------|:---------------------------:|------------------:|
 |   No issues with the code      |    Deployment to Heroku resulted in bugs      |   Work on bug fixes throughout           |
 
-#### Sprint 1: ###
-* We felt that working on the information on a regular basis as it was being discussed in class helped improve our understnafding of what we were developing
-* We also felt that dividing tasks between the team members prior to working on things was most efficient in accomplishing tasks and heightening responsibility
-* Lastly we felt that having regular meetings together gave us the opportunity to help each other out in areas that we may have been struggling or needed assistance
+#### Sprint 3
+##### Completed Tasks:
+1. Store chat messages in database
+2. Encrypt passwords
+3. Users can view the message history
+4. Secure against web attacks
+5. Users can send clickable URLs
+6. Filter language
+
+Duration: 10-30-2020 to 11-30-2020
+
+##### Contributions: 
+
+1.  Jacob Scheetz, 24 hours, contributed in use case, powerpoint, Trello, and use case diagram creation and implementation
+2.  Beth Hosek 2, 24 hours, contributed in use case, powerpoint, Trello, and use case diagram creation and implementation
+3.  Justen Stall, 24 hours, contributed in use case, powerpoint, Trello, and use case diagram creation and implementation
+4.  Dena Schaeffer, 24 hours, contributed in use case, powerpoint, Trello, and use case diagram creation and implementation
+
+##### Sprint Retrospective:
+* We focused on improving the design
+* We met more frequently to work on the application
 
 | Good     |   Could have been better    |  How to improve?  |
 |----------|:---------------------------:|------------------:|
-|   Great teamwork   |  We could have gone to office hours more   |     We can add more use cases to improve UX  |
-
-
-## User guide/Demo
-
-Write as a demo with screenshots and as a guide for users to use your system.
-
-* Users can toggle between light mode: 
-
-![light](lightmode.png)
-* Or dark mode:
-
-![dark](darkmode.png)
-
-* Users can register to the system:
-
-![register](register.png)
-
-* Users can logon to the system with their username and password:
-
-![login](userlogin.png)
-
-* Once logged in, the users can send messages in the chat and see who joins the chat:
-
-![chat](userlist.png)
-
-* Users can see when someone is typing:
-
-![chat](typing.png)
-
-* Users can send a private chat via the selection of an active user:
-
-![private-send](private.png)
-
-* Users can receive a private chat: 
-
-![receive-private](privatefrom.png)
-
-* Users private messages are not seen by others that are not recipients in the same chat: 
-
-![private](noprivate.png)
-
-* Users can create a group chat:
-
-![chat](group1.png)
-![chat](group2.png)
-
-* Users can logout (brings user back to login screen and notifies active users): 
-
-![chat](logout.png)
-
+|   More frequent meetings to implement use cases      |    Deploying to Heroku      |   We could have worked on the bugs as we discovered them, rather than adding it to a bug list           |

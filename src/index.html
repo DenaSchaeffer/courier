@@ -123,17 +123,27 @@
         }
 
         function createGroup() {
-            var userSelect = document.getElementById('userSelect');
+            // var userSelect = document.getElementById('userSelect');
+            // var groupName = document.getElementById('groupName').value;
+            // var selections = [];
+            // selections = Array.from(userSelect.selectedOptions).map(o => o.value)
+            // console.log(selections);
+
+            // var checkboxes = document.getElementById('userCheckboxes');
             var groupName = document.getElementById('groupName').value;
             var selections = [];
-            selections = Array.from(userSelect.selectedOptions).map(o => o.value)
+            var selections = Array.from(document.querySelectorAll("input[type=checkbox]:checked")).map(e => e.value);
+            // selections = Array.from(checkboxes.selectedOptions).map(checkbox => checkbox.value)
             console.log(selections);
             socketio.emit("creategroup", groupName, selections);
+            recipient = groupName;
+            groupRecipient = true;
+            displayMessages();
         }
 
         function typing() {
             console.log("typing");
-            socketio.emit("typing")
+            socketio.emit("typing");
         }
 
         function createMessage(message) {
@@ -178,13 +188,19 @@
             if (recipient === 'all') {
                 var selectedMessages = messages.filter(message => message.receiver === 'all');
             } else {
-                var selectedMessages = messages.filter(message =>
+                // Private message: Messages from recipient to me or from me to recipient
+                // Group message: Messages to recipient (recipient is group name)
+                if (groupRecipient) {
+                    var selectedMessages = messages.filter(message => message.receiver === recipient);
+                } else {
+                    var selectedMessages = messages.filter(message =>
                     (message.sender === recipient && message.receiver === myUsername) ||
                     (message.receiver === recipient && message.sender === myUsername));
+                }
             }
-            var messageWindow = document.getElementById('messages');
-
+            
             // TODO: uncomment
+            var messageWindow = document.getElementById('messages');
             messageWindow.innerHTML = '';
             console.log('Displayed messages:', selectedMessages)
             selectedMessages.forEach(message => {
@@ -317,6 +333,16 @@
             chatScreen.style.display = 'none';
         }
 
+        function showChatScreen() {
+            var chatScreen = document.getElementById('chatUI');
+            chatScreen.style.display = 'block';
+        }
+
+        function hideMessages() {
+            var messageWindow = document.getElementById('messages');
+            messageWindow.innerHTML = '';
+        }
+
         function hideMessageForm() {
             var messageForm = document.getElementById('messageForm');
             messageForm.style.display = 'none';
@@ -350,7 +376,6 @@
             return temp.innerHTML;
         };
 
-
         /* SOCKET.IO EVENT HANDLING */
 
         socketio.on("chat", (chatmessage) => {
@@ -371,20 +396,37 @@
             // console.log("new user, users:", users);
             users = newusers;
             console.log(users);
-            var select = document.getElementById('userSelect');
+            // var select = document.getElementById('userSelect');
             var list = document.getElementById("userList");
-            select.innerHTML = '';
+            var checkboxes = document.getElementById("userCheckboxes");
+            // select.innerHTML = '';
+            checkboxes.innerHTML = '';
             newusers.forEach(user => {
-                var userOption = '<option value="' + user.username + '">' + user.username + '</option>';
-                select.innerHTML += sanitizeHTML(userOption);
+                var userCheck = `
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="${user.username}" value="${user.id}">
+                        <label class="form-check-label" for="${user.username}">${user.username}</label>
+                    </div>
+                `
+                checkboxes.innerHTML += userCheck;
             });
             updateUserList();
         });
 
         socketio.on("newgroup", (groupName) => {
             groups.push(groupName);
+            var timestamp = Date.now();
+            messages.push({
+                message: 'Welcome to the group message!',
+                receiver: groupName,
+                sender: 'none',
+                timestamp: timestamp
+            });
             updateUserList();
-        })
+            recipient = groupName;
+            groupRecipient = true;
+            displayMessages();
+        });
 
         socketio.on("authenticated", (username) => {
             myUsername = username;
@@ -452,10 +494,6 @@
             // or alternatively
             // return text.replace(urlRegex, '<a href="$1">$1</a>')
         }
-
-
-
-
     </script>
 
     <!-- NAVBAR -->
@@ -527,7 +565,7 @@
             <!-- SIDEBAR/USER LIST -->
 
             <div id="sidebar" class="col-3">
-                <button class="btn btn-primary mb-3" onclick="hideMessageForm(); showGroupForm();">New Group</button>
+                <button class="btn btn-primary mb-3" onclick="showGroupForm(); hideChatScreen();">New Group</button>
                 <div class="list-group" id="userList">
                     <div class="list-group-item active" data-toggle="list"
                         onclick="recipient = 'all'; groupRecipient = false;">All Users</div>
@@ -545,8 +583,8 @@
                 <!-- MESSAGE SCREEN -->
 
                 <div id="messages" class="w-100 pr-3"></div>
-                <p id="typingMessage" clas="w-100 float-right"></p>
-                <div id="messageForm" class="w-100 bg-light pt-3 pr-3 pl-3">
+                <div id="messageForm" class="w-100 bg-light pr-3 pl-3">
+                    <p id="typingMessage" class="w-100 pt-1 mb-1 ml-3"></p>
                     <form onsubmit="sendmessage(); return false;" class="col-9">
                         <div class="form-group">
                             <!-- <label>Your message:</label> -->
@@ -561,29 +599,37 @@
                     </form>
                 </div>
 
-                <!-- CREATE GROUP SCREEN -->
-
-                <form id="createGroup" style="display: none;"
-                    onsubmit="createGroup(); hideGroupForm(); showMessageForm(); return false;">
-                    <div class="form-group">
-                        <label for="userSelect">Add Users to Group</label>
-                        <select multiple id="userSelect" class="form-control" name="user">
-                            <!-- <option value="all" selected>All</option> -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <div class="form-group">
-                            <label for="groupName">Enter Group Name</label>
-                            <input type="text" id="groupName" placeholder="Enter Group Name ..." class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-success" type="submit">Create Group</button>
-                        </div>
-                </form>
             </div>
+            <!-- CREATE GROUP SCREEN -->
+
         </div>
     </div>
 
+    <div id="createGroup" class="col-lg-6 col-sm-12" style="display: none;">
+        <form onsubmit="createGroup(); hideGroupForm(); showChatScreen(); return false;">
+            <!-- <div class="form-group">
+            <label for="userSelect">Add Users to Group</label>
+            <select multiple id="userSelect" class="form-control" name="user">
+              
+            </select>
+        </div> -->
+            <div class="form-group">
+                <div id="userCheckboxes" class="form-check">
+
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-group">
+                    <label for="groupName">Enter Group Name</label>
+                    <input type="text" id="groupName" placeholder="Enter Group Name ..." class="form-control">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-success" type="submit">Create Group</button>
+                </div>
+                <button class="btn btn-light mr-3" type="button"
+                    onclick="hideGroupForm(); showChatScreen(); return false;">Cancel</button>
+        </form>
+    </div>
     <!-- FOOTER -->
 
     <!-- <p id="subtitle" class="lead pl-3 fixed-bottom">Developed by Justen Stall, Dena Schaeffer, Beth Hosek, and Jacob
