@@ -68,6 +68,7 @@ The messenger application is a live-chat application that communicates between t
 - Users can send clickable URLs
 - Filter language
 - Users can logout
+- Users can toggle between light mode and dark mode
 
 
 ## Use cases
@@ -599,14 +600,18 @@ We implemented the following use cases into our messenger application:
 
 * Users can toggle between light mode: 
 
-![light](screenshots/lightmode.png)
+![light](screenshots/lightmodefinal.png)
 * Or dark mode:
 
-![dark](screenshots/darkmode.png)
+![dark](screenshots/darkmodefinal.png)
 
 * Users can register to the system:
 
-![register](screenshots/register.png)
+![register](screenshots/register1.png)
+
+* And users will be  directed to logon once registered:
+
+![register](screenshots/reguister2.png)
 
 * Users can logon to the system with their username and password:
 
@@ -614,7 +619,8 @@ We implemented the following use cases into our messenger application:
 
 * Once logged in, the users can send messages in the chat and see who joins the chat:
 
-![chat](screenshots/userlist.png)
+![chat](screenshots/beforesendpublic.png)
+![chat](screenshots/aftersendpublic.png)
 
 * Users can see when someone is typing:
 
@@ -626,32 +632,41 @@ We implemented the following use cases into our messenger application:
 
 * Users can receive a private chat: 
 
-![receive-private](screenshots/privatefrom.png)
-
-* Users private messages are not seen by others that are not recipients in the same chat: 
-
-![private](screenshots/noprivate.png)
+![receive-private](screenshots/beforeprivatesend.png)
+![receive-private](screenshots/afterprivatesend.png)
 
 * Users can create a group chat:
 
-![chat](screenshots/group1.png)
-![chat](screenshots/group2.png)
+![chat](screenshots/creategroupnaming.png)
+![chat](screenshots/creategrouplist.png)
 
 * Users can logout (brings user back to login screen and notifies active users): 
 
 ![chat](screenshots/logout.png)
 
 * Users can view the list of active users
+
+![users](screenshots/aftersendpublic.png)
+
 * Store chat messages in database
-* Encrypt passwords
+
+* Passwords of users are encrpyted in the database
+![hash](screenshots/register4.png)
+
 * Users can view the message history
 * Secure against web attacks
 * Users can send clickable URLs
-* Filter language
+
+* When users type foul language, they will be alerted and the message will be filtered
+
+![filter](screenshots/filter1.png)
+![filter](screenshots/filter2.png)
+![filter](screenshots/filter3.png)
 
 ### Progress Report
 
-![Sprint 0 timeline](screenshots/ganttchart.png)
+![Sprint 3 timeline](screenshots/trellocal.png)
+![Sprint 3 tasks](screenshots/trellolist.png)
 
 #### Sprint 0
 ##### Completed Tasks:
