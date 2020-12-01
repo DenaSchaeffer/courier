@@ -125,7 +125,7 @@ socketio.on("connection", (socketclient) => {
         // var stringchatmessage = "(PRIVATE) " + socketclient.username + " says: " + message.message;
         // var stringsentmessage = "(PRIVATE to " + receivingUser.username + ") " + socketclient.username + " says: " + message.message;
         var timestamp = Date.now();
-        var message = {
+        var chatmessage = {
             message: newMessage,
             sender: socketclient.username,
             receiver: message.receiver,
@@ -137,8 +137,8 @@ socketio.on("connection", (socketclient) => {
         //     receiver: receivingUser.username,
         //     timestamp: timestamp
         // }
-        console.log(message);
-        SendToAuthenticatedClient(socketclient, "chat", message);
+        console.log(chatmessage);
+        SendToAuthenticatedClient(socketclient, "chat", chatmessage);
         // socketio.to(socketclient.id).emit("chat", message);
 
         // socketio.to(message.socketId).emit("chat", chatmessage);
@@ -152,14 +152,14 @@ socketio.on("connection", (socketclient) => {
         var timestamp = Date.now();
         // var stringmessage = "(" + message.groupName + ") " + socketclient.username + " says: " + message.message;
         var newMessage = filterMessage(message.message);
-        var message = {
+        var chatmessage = {
             message: newMessage,
             sender: socketclient.username,
             receiver: message.groupName,
             timestamp: timestamp
         }
-        console.log(message);
-        SendToAuthenticatedClient(socketclient, "groupchat", message);
+        console.log(chatmessage);
+        SendToAuthenticatedClient(socketclient, "groupchat", chatmessage);
         // socketio.to(message.groupName).emit("chat", chatmessage);
     })
 
@@ -172,11 +172,11 @@ socketio.on("connection", (socketclient) => {
         console.log("users being added to group:", selections);
         // console.log(socketio.sockets.connected);
         selections.forEach(selection => {
-            for(var socket in socketio.sockets.connected) {
-                if(socket.id === selection) {
-                    socket.join(groupName);
-                }
-            }
+            // for(var socket in socketio.sockets.connected) {
+            //     if(socket.id === selection) {
+            //         socket.join(groupName);
+            //     }
+            // }
             socketio.sockets.connected[selection].join(groupName);
         });
         // var roomMembers = socketio.clients(groupName);
@@ -186,6 +186,14 @@ socketio.on("connection", (socketclient) => {
         groups.push(groupName);
         socketio.to(groupName).emit("newgroup", groupName);
         console.log(groups);
+
+        var timestamp = Date.now();
+        // socketio.to(groupName).emit("chat", {
+        //     message: 'Welcome to the group: \"' + groupName + '\"',
+        //     sender: socketclient.username,
+        //     receiver: groupName,
+        //     timestamp: timestamp
+        // });
     });
 
     socketclient.on('disconnect', () => {
@@ -256,38 +264,44 @@ var DataLayer = {
     }
 }
 function SendToAuthenticatedClient(sendersocket, type, data) {
-    var sockets = socketio.sockets.sockets;
-    for (var socketId in sockets) {
-        var socketclient = sockets[socketId];
-        if (socketclient.authenticated) {
-            if (typeof data === 'object' && data !== null) {
-                for (let property in data) {
-                    console.log('property:', data[property]);
-                    data[property] = xssfilter(data[property]);
-                    console.log('xss filtered:', data[property]);
-                }
-                data['timestamp'] = parseFloat(data['timestamp']);
-                console.log('new object:', data);
-            } else if (typeof data === 'string') {
-                data = xssfilter(data);
-            }
-            if (type === "chat") {
-                messengerdb.storePublicChat(data);
-                if (socketclient.username === data.receiver || socketclient.username === data.sender) {
+    // XSS Filtering
+    if (typeof data === 'object' && data !== null) {
+        for (let property in data) {
+            console.log('property:', data[property]);
+            data[property] = xssfilter(data[property]);
+            console.log('xss filtered:', data[property]);
+        }
+        data['timestamp'] = parseFloat(data['timestamp']);
+        console.log('new object:', data);
+    } else if (typeof data === 'string') {
+        data = xssfilter(data);
+    }
+
+    if (type === "groupchat") {
+        // messengerdb.storePublicChat(data);
+        // console.log(data);
+        socketio.to(data.receiver).emit("chat", data);
+    } else {
+        var sockets = socketio.sockets.sockets;
+        for (var socketId in sockets) {
+            var socketclient = sockets[socketId];
+            if (socketclient.authenticated) {
+                
+                if (type === "chat") {
+                    messengerdb.storePublicChat(data);
+                    if (socketclient.username === data.receiver || socketclient.username === data.sender) {
+                        socketclient.emit(type, data);
+                    }
+                } else {
                     socketclient.emit(type, data);
                 }
-            } else if (type === "groupchat") {
-                // messengerdb.storePublicChat(data);
-                // console.log(data);
-                socketio.to(data.receiver).emit("chat", data);
-            } else {
-                socketclient.emit(type, data);
+                var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
+                console.log(logmsg);
+    
             }
-            var logmsg = "Debug:>sent to " + socketclient.username + " with ID=" + socketId;
-            console.log(logmsg);
-
         }
     }
+    
 }
 
 function validateUsername(username) {

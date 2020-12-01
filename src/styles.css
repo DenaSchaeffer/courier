@@ -29,6 +29,7 @@ body {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
+	height: 82px;
 	box-sizing: border-box;
 }
 
@@ -36,7 +37,7 @@ body {
 	overflow-y: scroll;
 	height: 100%;
 	position: absolute;
-	padding-bottom: 72px;
+	padding-bottom: 94px;
 	box-sizing: border-box;
 	/* bottom: 72px; */
 }
@@ -94,4 +95,8 @@ body {
 
 .notice {
 	text-align: center;
+}
+
+#typingMessage {
+	height: 28px;
 }

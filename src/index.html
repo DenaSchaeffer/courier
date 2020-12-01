@@ -136,6 +136,9 @@
             // selections = Array.from(checkboxes.selectedOptions).map(checkbox => checkbox.value)
             console.log(selections);
             socketio.emit("creategroup", groupName, selections);
+            recipient = groupName;
+            groupRecipient = true;
+            displayMessages();
         }
 
         function typing() {
@@ -187,17 +190,17 @@
             } else {
                 // Private message: Messages from recipient to me or from me to recipient
                 // Group message: Messages to recipient (recipient is group name)
-                if(groupRecipient) {
-                    var selectedMessages = messages.filter(message => message.receiver === recipient);    
+                if (groupRecipient) {
+                    var selectedMessages = messages.filter(message => message.receiver === recipient);
                 } else {
                     var selectedMessages = messages.filter(message =>
-                        (message.sender === recipient && message.receiver === myUsername) ||
-                        (message.receiver === recipient && message.sender === myUsername));
+                    (message.sender === recipient && message.receiver === myUsername) ||
+                    (message.receiver === recipient && message.sender === myUsername));
                 }
             }
-            var messageWindow = document.getElementById('messages');
-
+            
             // TODO: uncomment
+            var messageWindow = document.getElementById('messages');
             messageWindow.innerHTML = '';
             console.log('Displayed messages:', selectedMessages)
             selectedMessages.forEach(message => {
@@ -412,7 +415,17 @@
 
         socketio.on("newgroup", (groupName) => {
             groups.push(groupName);
+            var timestamp = Date.now();
+            messages.push({
+                message: 'Welcome to the group message!',
+                receiver: groupName,
+                sender: 'none',
+                timestamp: timestamp
+            });
             updateUserList();
+            recipient = groupName;
+            groupRecipient = true;
+            displayMessages();
         });
 
         socketio.on("authenticated", (username) => {
@@ -570,8 +583,8 @@
                 <!-- MESSAGE SCREEN -->
 
                 <div id="messages" class="w-100 pr-3"></div>
-                <p id="typingMessage" clas="w-100 float-right"></p>
-                <div id="messageForm" class="w-100 bg-light pt-3 pr-3 pl-3">
+                <div id="messageForm" class="w-100 bg-light pr-3 pl-3">
+                    <p id="typingMessage" class="w-100 pt-1 mb-1 ml-3"></p>
                     <form onsubmit="sendmessage(); return false;" class="col-9">
                         <div class="form-group">
                             <!-- <label>Your message:</label> -->
