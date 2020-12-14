@@ -11,7 +11,7 @@ Instructor: Dr. Phu Phung
 
 
 ## Courier: The Messenger Application
-![Logo](https://drive.google.com/file/d/11pEIb4L1Sbrh9RrP4Tov8oK_NqWKknfl/view?usp=sharing)
+![Logo](/src/assets/logo.png)
 
 <https://cps490-messenger.herokuapp.com>
 
@@ -45,7 +45,7 @@ Source code repository (private access): <https://bitbucket.org/cps490f20-team8/
 
 The messenger application is a live-chat application that communicates between the client and chat server (web application in Node.js). 
 
-![High Level Architecture](https://drive.google.com/file/d/14oHt-ebwc5TA5wRE1OthhI9Up5nGadEq/view?usp=sharing)
+![High Level Architecture](/screenshots/architecture.png)
 
 ## System Analysis
 
